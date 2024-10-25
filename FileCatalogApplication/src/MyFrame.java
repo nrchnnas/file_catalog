@@ -34,7 +34,7 @@ public class MyFrame extends JFrame
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.4; // 40% of the width
+        gbc.weightx = 0.34; // 35% of the width
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         centerPanel.add(filePanel, gbc);
@@ -43,7 +43,7 @@ public class MyFrame extends JFrame
         catalogPanel.setBackground(Color.WHITE);
 
         gbc.gridx = 1;
-        gbc.weightx = 0.6; // 60% of the width
+        gbc.weightx = 0.65; // 65% of the width
         gbc.weighty = 1.0;
         centerPanel.add(catalogPanel, gbc);
         
