@@ -6,46 +6,71 @@
 //
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class MyFrame extends JFrame
+public class MyFrame extends JFrame implements ActionListener
 {
+
+    JButton compareButton;
+    JButton validateButton;
 
     MyFrame()
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
-        //-----------------------Sub Panels-------------------------
+        ImageIcon COMPARE_ICON = new ImageIcon("FileCatalogApplication/src/images/Compare.png");
+        ImageIcon VALIDATE_ICON = new ImageIcon("FileCatalogApplication/src/images/Reboot.png");
+
+        //-----------------------Upper Panel------------------------
+
+        compareButton = new JButton();
+        compareButton.setFocusable(false);
+        compareButton.setText("Compare Source Files: ");
+        compareButton.setIcon(COMPARE_ICON);
+        compareButton.addActionListener(this);
+
+        validateButton = new JButton();
+        validateButton.setFocusable(false);
+        validateButton.setText("Validate Catalog: ");
+        validateButton.setIcon(VALIDATE_ICON);
+        validateButton.addActionListener(this);
 
         JPanel upperPanel = new JPanel();
-        upperPanel.setPreferredSize(new Dimension(100,55));
+        upperPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        upperPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
+        upperPanel.setPreferredSize(new Dimension(100,70));
+        upperPanel.add(compareButton);
+        upperPanel.add(validateButton);
 
-        JPanel lowerPanel = new JPanel();
-        lowerPanel.setBackground(DARK_GRAY);
-        lowerPanel.setPreferredSize(new Dimension(100,175));
+        //----------------------Center Panel------------------------
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        //----------------------Center Panel------------------------
-
         FilePanel filePanel = new FilePanel();
+        CatalogPanel catalogPanel = new CatalogPanel();
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.34; // 35% of the width
+        gbc.weightx = 0.35; // 35% of the width
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         centerPanel.add(filePanel, gbc);
-
-        CatalogPanel catalogPanel = new CatalogPanel();
-        catalogPanel.setBackground(Color.WHITE);
 
         gbc.gridx = 1;
         gbc.weightx = 0.65; // 65% of the width
         gbc.weighty = 1.0;
         centerPanel.add(catalogPanel, gbc);
+
+        //-----------------------Lower Panel-------------------------
+
+        //TO DO: dynamic according to button selections
+        JPanel lowerPanel = new JPanel();
+        lowerPanel.setBackground(DARK_GRAY);
+        lowerPanel.setPreferredSize(new Dimension(100,175));
         
         //-----------------------Main Panel--------------------------
 
@@ -62,11 +87,25 @@ public class MyFrame extends JFrame
         this.setResizable(true); 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true); 
-        this.setLayout(new BorderLayout(5,5));
+        this.setLayout(new BorderLayout());
 
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER); 
         this.add(lowerPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        //TO DO: implement compare and validate logic
+        if (e.getSource() == compareButton)
+        {
+            System.out.println(compareButton.getText());
+        }
+        else if (e.getSource() == validateButton)
+        {
+            System.out.println(validateButton.getText());
+        }
     }
 }
 

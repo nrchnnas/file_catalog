@@ -21,10 +21,11 @@ public class FilePanel extends JPanel implements ActionListener
     
     FilePanel()
     {
+        Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("images/Chevron Left.png");
-        ImageIcon REDO_ICON = new ImageIcon("images/Chevron Right.png");
-        ImageIcon SEARCH_ICON = new ImageIcon("images/Search.png");
+        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left.png");
+        ImageIcon REDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Right.png");
+        ImageIcon SEARCH_ICON = new ImageIcon("FileCatalogApplication/src/images/Search.png");
 
         //----------------Current Directory Panel-------------------
 
@@ -80,6 +81,8 @@ public class FilePanel extends JPanel implements ActionListener
 
         fileTable = new FileTable();
         JScrollPane tableScrollPane = fileTable.getScrollPane();
+        tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        tableScrollPane.setBackground(LIGHT_GRAY);
 
         //-----------------------Sub Panels-------------------------
 
@@ -90,6 +93,7 @@ public class FilePanel extends JPanel implements ActionListener
 
         JPanel lowerPanel = new JPanel();
         lowerPanel.setLayout(new BorderLayout());
+        lowerPanel.setPreferredSize(new Dimension(70, 100));
         lowerPanel.add(tableScrollPane, BorderLayout.CENTER);
 
         //-----------------------Main Panel--------------------------
