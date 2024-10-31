@@ -9,26 +9,26 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class FilePanel extends JPanel implements ActionListener
 {
-    JButton undoButton;
-    JButton redoButton;
-    MyTextField searchField;
-    MyTextField suffixField;
-    FileTable fileTable;
+    JButton undoButton; //undo directory button
+    JButton redoButton; //redo directory button
+    MyTextField searchField; //text field for searching files in disk
+    MyTextField suffixField; //text field for searching files in disk by searching an extension/suffix
+    private FileTable fileTable; //the table containing files in disk
     
     FilePanel()
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left.png");
-        ImageIcon REDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Right.png");
+        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left Dark.png");
+        ImageIcon REDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Right Light.png");
         ImageIcon SEARCH_ICON = new ImageIcon("FileCatalogApplication/src/images/Search.png");
 
         //----------------Current Directory Panel-------------------
 
+        //TO DO: make button dynamic so that it changes from dark to light depending on actions
         undoButton = new JButton();
         undoButton.setFocusable(false); 
         undoButton.setIcon(UNDO_ICON);
@@ -54,7 +54,6 @@ public class FilePanel extends JPanel implements ActionListener
         searchImage.setIcon(SEARCH_ICON); 
 
         searchField = new MyTextField("Search");
-
         suffixField = new MyTextField("by suffix");
 
         JPanel searchPanel = new JPanel(new GridBagLayout());
@@ -79,7 +78,7 @@ public class FilePanel extends JPanel implements ActionListener
 
         //---------------------Table Panel-----------------------
 
-        fileTable = new FileTable();
+        fileTable = new FileTable(this);
         JScrollPane tableScrollPane = fileTable.getScrollPane();
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         tableScrollPane.setBackground(LIGHT_GRAY);
@@ -119,6 +118,14 @@ public class FilePanel extends JPanel implements ActionListener
         //TO DO: implement search functionality
         
         //TO DO: implement searching by suffix functionality
+    }
+
+    // Gets the file table that has been instantiated in this class
+    // Return:
+    //      -filetable - the table
+    public FileTable getFileTable()
+    {
+        return fileTable;
     }
 
 }

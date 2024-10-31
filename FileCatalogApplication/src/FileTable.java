@@ -9,18 +9,25 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 
 public class FileTable
 {
-    private JTable table;
-    private JScrollPane scrollPane;
+    private JTable table; //reference to the table that contains the files from the disk
+    private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can
+    // scroll if overflowed
 
-    public FileTable()
+    public FileTable(JComponent parentComponent)
     {
 
         //TO DO: convert from dummy data to real data
         //TO DO: be able to convert strings to integer and date format
+        //TO DO: if directory, ext. and size must be empty
 
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data =
@@ -44,6 +51,36 @@ public class FileTable
         //TO DO: if its directory, add file icon
         addIcon();
         changeFocusColor();
+
+        //-----------------Row Selection------------------
+
+        // Adds a selection listener so that we can get values of each row selection
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                if (!e.getValueIsAdjusting())
+                {
+                    //TO DO: handle row selection logic
+                }
+            }
+        });
+
+        // Clear table selection if click is outside the table
+        // Arguments:
+        //      -e: mouse event
+        parentComponent.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (e.getSource() != table)
+                {
+                    table.clearSelection();
+                }
+            }
+        });
 
         //------------------Table Header-------------------
 
@@ -70,6 +107,33 @@ public class FileTable
     }
 
     //
+    // check if row is selected or not
+    // Returns:
+    //      true if row is selected and false if it isn't
+    //
+    public boolean isRowSelected()
+    {
+        return table.getSelectedRow() != -1;
+    }
+
+    //TO DO: might have to get more than file name.
+
+    //
+    // get file name from selected row
+    // Returns:
+    //      file name value, otherwise null if row is not selected
+    //
+    public String getSelectedFileName()
+    {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            return table.getValueAt(selectedRow, 0).toString();
+        }
+        return null;
+    }
+
+    //
     // set the widths of the columns
     //
     private void setColumnWidths()
@@ -84,7 +148,7 @@ public class FileTable
         sizeColumn.setPreferredWidth(5);
 
         TableColumn dateColumn = table.getColumnModel().getColumn(3);
-        dateColumn.setPreferredWidth(30);
+        dateColumn.setPreferredWidth(50);
     }
 
     //
@@ -124,8 +188,8 @@ public class FileTable
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon("images/Document.png");
-        ImageIcon folderIcon = new ImageIcon("images/Folder.png");
+        ImageIcon documentIcon = new ImageIcon("FileCatalogApplication/src/images/Document.png");
+        ImageIcon folderIcon = new ImageIcon("FileCatalogApplication/src/images/Folder.png");
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {
@@ -158,5 +222,13 @@ public class FileTable
         };
 
         table.getColumnModel().getColumn(0).setCellRenderer(iconRenderer);
+    }
+
+    // Gets the file table that has been instantiated in this class
+    // Return:
+    //      -table - the table
+    public JTable getTable()
+    {
+        return table;
     }
 }

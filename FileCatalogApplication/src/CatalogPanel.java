@@ -13,15 +13,23 @@ public class CatalogPanel extends JPanel
     MyTextField searchField;
     MyTextField annotationField;
     MyTextField fileTypeField;
+    MyTextField dateField;
     CatalogTable catalogTable;
 
     CatalogPanel()
     {
 
+        Color LIGHT_GRAY = Color.decode("#E8E8E8");
         ImageIcon SEARCH_ICON = new ImageIcon("FileCatalogApplication/src/images/Search.png");
+
+        //----------------------Title Panel------------------------
+
         JLabel catalogTitle = new JLabel("Catalog");
-        catalogTitle.setHorizontalAlignment(SwingConstants.LEFT);
-        catalogTitle.setBackground(Color.WHITE);
+        catalogTitle.setFont(new Font("", Font.PLAIN, 20));
+        catalogTitle.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.add(catalogTitle);
 
         //----------------------Search Panel-----------------------
 
@@ -29,9 +37,12 @@ public class CatalogPanel extends JPanel
         searchImage.setIcon(SEARCH_ICON);
 
         searchField = new MyTextField("Search");
+        searchField.setBackground(LIGHT_GRAY);
 
         JPanel searchPanel = new JPanel(new GridBagLayout());
-        searchPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        searchPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        searchPanel.setBackground(Color.WHITE);
+        searchPanel.setOpaque(true);
         GridBagConstraints searchGbc = new GridBagConstraints();
         searchGbc.fill = GridBagConstraints.BOTH;
 
@@ -48,16 +59,22 @@ public class CatalogPanel extends JPanel
         //-------------------Search Option Panel--------------------
 
         annotationField = new MyTextField("by annotation");
+        annotationField.setBackground(LIGHT_GRAY);
         fileTypeField = new MyTextField("by file Type");
+        fileTypeField.setBackground(LIGHT_GRAY);
+        dateField = new MyTextField("by Last edited date");
+        dateField.setBackground(LIGHT_GRAY);
 
         JPanel searchOptionPanel = new JPanel(new GridBagLayout());
         searchOptionPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        searchOptionPanel.setBackground(Color.WHITE);
+        searchOptionPanel.setOpaque(true);
         GridBagConstraints searchOptionGbc = new GridBagConstraints();
         searchOptionGbc.fill = GridBagConstraints.BOTH;
 
         searchOptionGbc.gridx = 0;
         searchOptionGbc.gridy = 1;
-        searchOptionGbc.weightx = 0.4;
+        searchOptionGbc.weightx = 0.6;
         searchOptionPanel.add(annotationField, searchOptionGbc);
 
         searchOptionGbc.gridx = 1;
@@ -67,8 +84,8 @@ public class CatalogPanel extends JPanel
 
         searchOptionGbc.gridx = 2;
         searchOptionGbc.gridy = 1;
-        searchOptionGbc.weightx = 0.4;
-        //searchOptionPanel.add(datePicker, searchOptionGbc);
+        searchOptionGbc.weightx = 0.2;
+        searchOptionPanel.add(dateField, searchOptionGbc);
 
         //---------------------Table Panel-----------------------
 
@@ -81,7 +98,7 @@ public class CatalogPanel extends JPanel
 
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new BoxLayout(upperPanel,BoxLayout.Y_AXIS));
-        upperPanel.add(catalogTitle);
+        upperPanel.add(titlePanel);
         upperPanel.add(searchPanel);
         upperPanel.add(searchOptionPanel);
 
@@ -93,6 +110,7 @@ public class CatalogPanel extends JPanel
         //-----------------------Main Panel--------------------------
 
         this.setLayout(new BorderLayout());
+        this.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
     }

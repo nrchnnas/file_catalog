@@ -13,7 +13,7 @@ import javax.swing.*;
 public class MyTextField extends JTextField implements FocusListener 
 {
 
-    private final String placeholder;
+    private final String placeholder; //placeholder text inside the text field
 
     MyTextField(String placeholder) 
     {
@@ -27,7 +27,7 @@ public class MyTextField extends JTextField implements FocusListener
     //
     // Removes placeholder text when the user clicks on the text field
     // Arguments:
-    //      e: Focus event
+    //      e: keyboard event
     //
     @Override
     public void focusGained(FocusEvent e) 
@@ -42,7 +42,7 @@ public class MyTextField extends JTextField implements FocusListener
     //
     // Restores placeholder text when the user clicks off the text field
     // Arguments:
-    //      e: Focus event
+    //      e: keyboard event
     //
     @Override
     public void focusLost(FocusEvent e) 

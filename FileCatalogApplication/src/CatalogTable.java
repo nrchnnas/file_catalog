@@ -8,24 +8,26 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class CatalogTable
-{
+public class CatalogTable {
     private JTable table;
     private JScrollPane scrollPane;
 
-    public CatalogTable()
-    {
+    public CatalogTable() {
 
         //TO DO: convert from dummy data to real data
         //TO DO: be able to convert strings to integer and date format
+        //TO DO: if directory, ext. and size must be empty
 
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
         Object[][] data =
                 {
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
+                        {"Program", "C", "21.08.2019 17:00", "This program manages a library's inventory, including books and member records. It provides functionalities such as adding, updating, searching, and deleting records. Users can also borrow and return books, with borrowing history recorded for each member.", "View More"},
                         {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
                         {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
                         {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
@@ -47,6 +49,12 @@ public class CatalogTable
         addIcon();
         changeFocusColor();
 
+        //----------------View More Button-----------------
+
+        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
+        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
+        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More")));
+
         //------------------Table Header-------------------
 
         JTableHeader tableHeader = table.getTableHeader();
@@ -66,27 +74,28 @@ public class CatalogTable
     // Returns:
     //      scrollPane: scrollpane for the table
     //
-    public JScrollPane getScrollPane()
-    {
+    public JScrollPane getScrollPane() {
         return scrollPane;
     }
 
     //
     // set the widths of the columns
     //
-    private void setColumnWidths()
-    {
+    private void setColumnWidths() {
         TableColumn nameColumn = table.getColumnModel().getColumn(0);
-        nameColumn.setPreferredWidth(100);
+        nameColumn.setPreferredWidth(150);
 
         TableColumn extColumn = table.getColumnModel().getColumn(1);
         extColumn.setPreferredWidth(5);
 
-        TableColumn sizeColumn = table.getColumnModel().getColumn(2);
-        sizeColumn.setPreferredWidth(5);
+        TableColumn dateColumn = table.getColumnModel().getColumn(2);
+        dateColumn.setPreferredWidth(50);
 
-        TableColumn dateColumn = table.getColumnModel().getColumn(3);
-        dateColumn.setPreferredWidth(30);
+        TableColumn annotationColumn = table.getColumnModel().getColumn(3);
+        annotationColumn.setPreferredWidth(300);
+
+        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
+        viewMoreColumn.setPreferredWidth(30);
     }
 
     //
@@ -94,21 +103,16 @@ public class CatalogTable
     // Returns:
     //      cell: the cell which is being selected/focused
     //
-    private void changeFocusColor()
-    {
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
-        {
+    private void changeFocusColor() {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-            {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                if (isSelected)
-                {
+                if (isSelected) {
                     cell.setBackground(Color.LIGHT_GRAY);
                     cell.setForeground(Color.BLACK);
-                } else
-                {
+                } else {
                     cell.setBackground(Color.WHITE);
                     cell.setForeground(Color.BLACK);
                 }
@@ -124,16 +128,13 @@ public class CatalogTable
     // Returns:
     //      nameCell: the first column of the field that the icon is added to
     //
-    private void addIcon()
-    {
-        ImageIcon documentIcon = new ImageIcon("images/Document.png");
-        ImageIcon folderIcon = new ImageIcon("images/Folder.png");
+    private void addIcon() {
+        ImageIcon documentIcon = new ImageIcon("FileCatalogApplication/src/images/Document.png");
+        ImageIcon folderIcon = new ImageIcon("FileCatalogApplication/src/images/Folder.png");
 
-        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
-        {
+        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-            {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JLabel nameCell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 // Set icon based on if it's a file or directory
@@ -143,12 +144,10 @@ public class CatalogTable
                 Image scaledImage = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
                 nameCell.setIcon(new ImageIcon(scaledImage));
 
-                if (isSelected)
-                {
+                if (isSelected) {
                     nameCell.setBackground(Color.LIGHT_GRAY);
                     nameCell.setForeground(Color.BLACK);
-                } else
-                {
+                } else {
                     nameCell.setBackground(Color.WHITE);
                     nameCell.setForeground(Color.BLACK);
                 }
