@@ -16,8 +16,8 @@ public class FilePanel extends JPanel implements ActionListener
     JButton redoButton; //redo directory button
     MyTextField searchField; //text field for searching files in disk
     MyTextField suffixField; //text field for searching files in disk by searching an extension/suffix
-    private FileTable fileTable; //the table containing files in disk
-    
+    private final transient FileTable fileTable; //the table containing files in disk
+
     FilePanel()
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
@@ -30,15 +30,15 @@ public class FilePanel extends JPanel implements ActionListener
 
         //TO DO: make button dynamic so that it changes from dark to light depending on actions
         undoButton = new JButton();
-        undoButton.setFocusable(false); 
+        undoButton.setFocusable(false);
         undoButton.setIcon(UNDO_ICON);
         undoButton.addActionListener(this);
 
         redoButton = new JButton();
         redoButton.setFocusable(false);
         redoButton.setIcon(REDO_ICON);
-        redoButton.addActionListener(this); 
-        
+        redoButton.addActionListener(this);
+
         //TO DO: make currDirLabel dynamic
         JLabel currDirLabel = new JLabel("Disk"); //label for the current directory we are in
 
@@ -51,7 +51,7 @@ public class FilePanel extends JPanel implements ActionListener
         //----------------------Search Panel-----------------------
 
         JLabel searchImage = new JLabel();
-        searchImage.setIcon(SEARCH_ICON); 
+        searchImage.setIcon(SEARCH_ICON);
 
         searchField = new MyTextField("Search");
         suffixField = new MyTextField("by suffix");
@@ -103,20 +103,12 @@ public class FilePanel extends JPanel implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) 
+    public void actionPerformed(ActionEvent e)
     {
         //TO DO: implement undo and redo functionality
-        if (e.getSource() == undoButton) 
-        {
-            System.out.println("Undo button clicked");
-        }
-        else if (e.getSource() == redoButton) 
-        {
-            System.out.println("Redo button clicked");
 
-        }
         //TO DO: implement search functionality
-        
+
         //TO DO: implement searching by suffix functionality
     }
 

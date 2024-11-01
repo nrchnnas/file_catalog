@@ -8,15 +8,21 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class CatalogTable {
     private JTable table;
     private JScrollPane scrollPane;
+
+    public class LibraryConstants
+    {
+        public static final String PROGRAM_NAME = "Program";
+        public static final String LANGUAGE = "C";
+        public static final String LAST_UPDATED = "21.08.2019 17:00";
+        public static final String FILE_VIEWER_DESCRIPTION = "Program to help view files in disk";
+        public static final String VIEW_MORE = "View More";
+    }
 
     public CatalogTable() {
 
@@ -27,12 +33,11 @@ public class CatalogTable {
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
         Object[][] data =
                 {
-                        {"Program", "C", "21.08.2019 17:00", "This program manages a library's inventory, including books and member records. It provides functionalities such as adding, updating, searching, and deleting records. Users can also borrow and return books, with borrowing history recorded for each member.", "View More"},
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
-                        {"Program", "C", "21.08.2019 17:00", "Program to help view files in disk", "View More"},
+                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
+                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
+                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
+                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
+                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
                 };
 
         //---------------------Table----------------------
@@ -65,8 +70,8 @@ public class CatalogTable {
 
         scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     //
@@ -116,7 +121,7 @@ public class CatalogTable {
                     cell.setBackground(Color.WHITE);
                     cell.setForeground(Color.BLACK);
                 }
-                setHorizontalAlignment(JLabel.LEFT);
+                setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 return cell;
             }
         });
@@ -152,7 +157,7 @@ public class CatalogTable {
                     nameCell.setForeground(Color.BLACK);
                 }
 
-                nameCell.setHorizontalAlignment(JLabel.LEFT);
+                nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
                 return nameCell;
             }

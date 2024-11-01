@@ -1,6 +1,6 @@
 // CatalogPanel.java
 //
-// CatalogPanel organizes the display for the files in the catalog. It allows different searching functionalities. 
+// CatalogPanel organizes the display for the files in the catalog. It allows different searching functionalities.
 //
 // Created by Lalida Krairit, 25 October 2024
 //
@@ -14,7 +14,7 @@ public class CatalogPanel extends JPanel
     MyTextField annotationField;
     MyTextField fileTypeField;
     MyTextField dateField;
-    CatalogTable catalogTable;
+    private final transient CatalogTable catalogTable;
 
     CatalogPanel()
     {

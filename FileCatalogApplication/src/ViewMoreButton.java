@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 
 public class ViewMoreButton
 {
+
     public static class ViewButtonRenderer extends JButton implements TableCellRenderer
     {
         public ViewButtonRenderer()
@@ -42,14 +43,7 @@ public class ViewMoreButton
             this.button.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
             this.button.setOpaque(true);
 
-            this.button.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    fireEditingStopped();
-                }
-            });
+            this.button.addActionListener(e -> fireEditingStopped());
         }
 
         @Override
@@ -76,10 +70,5 @@ public class ViewMoreButton
             return super.stopCellEditing();
         }
 
-        @Override
-        protected void fireEditingStopped()
-        {
-            super.fireEditingStopped();
-        }
     }
 }

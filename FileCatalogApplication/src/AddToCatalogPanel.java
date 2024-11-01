@@ -17,7 +17,7 @@ public class AddToCatalogPanel extends JPanel
     JButton cancelButton; //button to cancel
     JButton addButton; //button to add to catalog
     JTextArea addAnnotationField; //text field for annotation
-    private final String placeholderText = "Add an annotation: "; //placeholder text inside the text field
+    private static final String placeholderText = "Add an annotation: "; //placeholder text inside the text field
 
     public AddToCatalogPanel(ActionListener closeListener)
     {

@@ -73,9 +73,7 @@ public class MainFrame extends JFrame implements ActionListener
 
         filePanel = new FilePanel();
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
-        {
-            addButton.setEnabled(filePanel.getFileTable().isRowSelected());
-        });
+                addButton.setEnabled(filePanel.getFileTable().isRowSelected()));
 
         CatalogPanel catalogPanel = new CatalogPanel();
 
@@ -103,16 +101,16 @@ public class MainFrame extends JFrame implements ActionListener
         this.getContentPane().setBackground(LIGHT_GRAY);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double sc_width = screenSize.getWidth();
-        double sc_height = screenSize.getHeight();
-        int width = (int)(sc_width / (1440/1024));
-        int height = (int)(sc_height / (1440/1024));
-        this.setSize(width,height); 
- 
+        double screenWidth = screenSize.getWidth();
+        double screenHeight = screenSize.getHeight();
+        int width = (int)(screenWidth / (double)(1440/1024));
+        int height = (int)(screenHeight / (double)(1440/1024));
+        this.setSize(width,height);
+
         this.setLocationRelativeTo(null); //center this
-        this.setResizable(true); 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true); 
+        this.setResizable(true);
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        this.setVisible(true);
         this.setLayout(new BorderLayout());
 
         this.add(upperPanel, BorderLayout.NORTH);
@@ -151,14 +149,7 @@ public class MainFrame extends JFrame implements ActionListener
         }
 
         //TO DO: implement the other functions
-        else if (e.getSource() == compareButton)
-        {
-            System.out.println("Compare Source Files clicked");
-        }
-        else if (e.getSource() == validateButton)
-        {
-            System.out.println("Validate Catalog clicked");
-        }
+
     }
 
 }

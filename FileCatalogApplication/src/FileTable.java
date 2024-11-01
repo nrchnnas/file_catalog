@@ -22,6 +22,14 @@ public class FileTable
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can
     // scroll if overflowed
 
+    public class LibraryConstants
+    {
+        public static final String PROGRAM_NAME = "Program";
+        public static final String LANGUAGE = "C";
+        public static final String SIZE = "176B";
+        public static final String LAST_UPDATED = "21.08.2019 17:00";
+    }
+
     public FileTable(JComponent parentComponent)
     {
 
@@ -32,10 +40,11 @@ public class FileTable
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data =
                 {
-                {"Program", "C", "176B", "21.08.2019 17:00"},
-                {"Program", "C", "176B", "21.08.2019 17:00"},
-                {"Program", "C", "176B", "21.08.2019 17:00"},
-                {"Program", "C", "176B", "21.08.2019 17:00"},
+                        {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
+                        {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
+                        {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
+                        {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
+                        {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
                 };
 
         //---------------------Table----------------------
@@ -92,8 +101,8 @@ public class FileTable
 
         scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     //
@@ -174,7 +183,7 @@ public class FileTable
                     cell.setBackground(Color.WHITE);
                     cell.setForeground(Color.BLACK);
                 }
-                setHorizontalAlignment(JLabel.LEFT);
+                setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 return cell;
             }
         });
@@ -215,7 +224,7 @@ public class FileTable
                     nameCell.setForeground(Color.BLACK);
                 }
 
-                nameCell.setHorizontalAlignment(JLabel.LEFT);
+                nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
                 return nameCell;
             }
