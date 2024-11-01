@@ -9,35 +9,36 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class FilePanel extends JPanel implements ActionListener
 {
-    JButton undoButton;
-    JButton redoButton;
-    MyTextField searchField;
-    MyTextField suffixField;
-    FileTable fileTable;
-    
+    JButton undoButton; //undo directory button
+    JButton redoButton; //redo directory button
+    MyTextField searchField; //text field for searching files in disk
+    MyTextField suffixField; //text field for searching files in disk by searching an extension/suffix
+    private final transient FileTable fileTable; //the table containing files in disk
+
     FilePanel()
     {
+        Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("images/Chevron Left.png");
-        ImageIcon REDO_ICON = new ImageIcon("images/Chevron Right.png");
-        ImageIcon SEARCH_ICON = new ImageIcon("images/Search.png");
+        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left Dark.png");
+        ImageIcon REDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Right Light.png");
+        ImageIcon SEARCH_ICON = new ImageIcon("FileCatalogApplication/src/images/Search.png");
 
         //----------------Current Directory Panel-------------------
 
+        //TO DO: make button dynamic so that it changes from dark to light depending on actions
         undoButton = new JButton();
-        undoButton.setFocusable(false); 
+        undoButton.setFocusable(false);
         undoButton.setIcon(UNDO_ICON);
         undoButton.addActionListener(this);
 
         redoButton = new JButton();
         redoButton.setFocusable(false);
         redoButton.setIcon(REDO_ICON);
-        redoButton.addActionListener(this); 
-        
+        redoButton.addActionListener(this);
+
         //TO DO: make currDirLabel dynamic
         JLabel currDirLabel = new JLabel("Disk"); //label for the current directory we are in
 
@@ -50,10 +51,9 @@ public class FilePanel extends JPanel implements ActionListener
         //----------------------Search Panel-----------------------
 
         JLabel searchImage = new JLabel();
-        searchImage.setIcon(SEARCH_ICON); 
+        searchImage.setIcon(SEARCH_ICON);
 
         searchField = new MyTextField("Search");
-
         suffixField = new MyTextField("by suffix");
 
         JPanel searchPanel = new JPanel(new GridBagLayout());
@@ -78,8 +78,10 @@ public class FilePanel extends JPanel implements ActionListener
 
         //---------------------Table Panel-----------------------
 
-        fileTable = new FileTable();
+        fileTable = new FileTable(this);
         JScrollPane tableScrollPane = fileTable.getScrollPane();
+        tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        tableScrollPane.setBackground(LIGHT_GRAY);
 
         //-----------------------Sub Panels-------------------------
 
@@ -90,6 +92,7 @@ public class FilePanel extends JPanel implements ActionListener
 
         JPanel lowerPanel = new JPanel();
         lowerPanel.setLayout(new BorderLayout());
+        lowerPanel.setPreferredSize(new Dimension(70, 100));
         lowerPanel.add(tableScrollPane, BorderLayout.CENTER);
 
         //-----------------------Main Panel--------------------------
@@ -100,21 +103,21 @@ public class FilePanel extends JPanel implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) 
+    public void actionPerformed(ActionEvent e)
     {
         //TO DO: implement undo and redo functionality
-        if (e.getSource() == undoButton) 
-        {
-            System.out.println("Undo button clicked");
-        }
-        else if (e.getSource() == redoButton) 
-        {
-            System.out.println("Redo button clicked");
 
-        }
         //TO DO: implement search functionality
-        
+
         //TO DO: implement searching by suffix functionality
+    }
+
+    // Gets the file table that has been instantiated in this class
+    // Return:
+    //      -filetable - the table
+    public FileTable getFileTable()
+    {
+        return fileTable;
     }
 
 }

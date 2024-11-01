@@ -10,16 +10,16 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.*;
 
-public class MyTextField extends JTextField implements FocusListener 
+public class MyTextField extends JTextField implements FocusListener
 {
 
-    private final String placeholder;
+    private final String placeholder; //placeholder text inside the text field
 
-    MyTextField(String placeholder) 
+    MyTextField(String placeholder)
     {
         this.placeholder = placeholder;
         this.setText(placeholder);
-        this.setForeground(Color.GRAY); 
+        this.setForeground(Color.GRAY);
         this.setBackground(Color.WHITE);
         this.addFocusListener(this);
     }
@@ -27,27 +27,27 @@ public class MyTextField extends JTextField implements FocusListener
     //
     // Removes placeholder text when the user clicks on the text field
     // Arguments:
-    //      e: Focus event
+    //      e: keyboard event
     //
     @Override
-    public void focusGained(FocusEvent e) 
+    public void focusGained(FocusEvent e)
     {
-        if (this.getText().equals(placeholder)) 
+        if (this.getText().equals(placeholder))
         {
             this.setText("");
-            this.setForeground(Color.BLACK); 
+            this.setForeground(Color.BLACK);
         }
     }
 
     //
     // Restores placeholder text when the user clicks off the text field
     // Arguments:
-    //      e: Focus event
+    //      e: keyboard event
     //
     @Override
-    public void focusLost(FocusEvent e) 
+    public void focusLost(FocusEvent e)
     {
-        if (this.getText().isEmpty()) 
+        if (this.getText().isEmpty())
         {
             this.setText(placeholder);
             this.setForeground(Color.GRAY);
