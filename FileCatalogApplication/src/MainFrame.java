@@ -10,8 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class MainFrame extends JFrame implements ActionListener
-{
+public class MainFrame extends JFrame implements ActionListener {
 
     JButton compareButton; //compare source files button
     JButton validateButton; //validate catalog button
@@ -20,8 +19,7 @@ public class MainFrame extends JFrame implements ActionListener
     JPanel lowerPanel; //the lower panel of the frame
     FilePanel filePanel; //reference to the panel containing the file table
 
-    MainFrame()
-    {
+    MainFrame() {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
@@ -44,6 +42,7 @@ public class MainFrame extends JFrame implements ActionListener
         moveFileButton.setText("Move Source files");
         moveFileButton.setIcon(MOVE_ICON);
         moveFileButton.addActionListener(this);
+        moveFileButton.setEnabled(false);
 
         compareButton = new JButton();
         compareButton.setFocusable(false);
@@ -72,9 +71,13 @@ public class MainFrame extends JFrame implements ActionListener
         GridBagConstraints gbc = new GridBagConstraints();
 
         filePanel = new FilePanel();
+        //sets the listener which enables the buttons if row is selected from file table
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
-                addButton.setEnabled(filePanel.getFileTable().isRowSelected()));
-
+        {
+                boolean rowSelected = filePanel.getFileTable().isRowSelected(); //rowSelected is boolean if row is selected or not
+                addButton.setEnabled(rowSelected);
+                moveFileButton.setEnabled(rowSelected);
+        });
         CatalogPanel catalogPanel = new CatalogPanel();
 
         //setting the layout of the two tables using Grid Bag Layout
@@ -92,9 +95,9 @@ public class MainFrame extends JFrame implements ActionListener
 
         //-----------------------Lower Panel-------------------------
 
-        lowerPanel  = new JPanel();
+        lowerPanel = new JPanel();
         lowerPanel.setBackground(DARK_GRAY);
-        lowerPanel.setPreferredSize(new Dimension(100,175));
+        lowerPanel.setPreferredSize(new Dimension(100, 175));
 
         //-----------------------Main Panel--------------------------
 
@@ -103,9 +106,9 @@ public class MainFrame extends JFrame implements ActionListener
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double screenWidth = screenSize.getWidth();
         double screenHeight = screenSize.getHeight();
-        int width = (int)(screenWidth / (double)(1440/1024));
-        int height = (int)(screenHeight / (double)(1440/1024));
-        this.setSize(width,height);
+        int width = (int) (screenWidth / (double) (1440 / 1024));
+        int height = (int) (screenHeight / (double) (1440 / 1024));
+        this.setSize(width, height);
 
         this.setLocationRelativeTo(null); //center this
         this.setResizable(true);
@@ -121,7 +124,7 @@ public class MainFrame extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        // adds the add annotation panel to lowerPanel if row is selected
+        // Adds the add annotation panel to lowerPanel if row is selected
         if (e.getSource() == addButton)
         {
             if (filePanel.getFileTable().isRowSelected())
@@ -141,16 +144,49 @@ public class MainFrame extends JFrame implements ActionListener
             {
                 JOptionPane.showMessageDialog(this, "Please select a file from the left table.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-
-        else if (e.getSource() == moveFileButton)
+        // Adds the move file panel to lowerPanel if row is selected
+        } else if (e.getSource() == moveFileButton)
         {
-            // NEXT TO DO
+            if (filePanel.getFileTable().isRowSelected())
+            {
+                lowerPanel.removeAll();
+
+                // Wrap MoveFilePanel in a final array to allow usage within the lambda
+                final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
+
+                //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory, 3. table reference
+                movePanelHolder[0] = new MoveFilePanel(
+                    event ->
+                    {//1.
+                        lowerPanel.removeAll();
+                        lowerPanel.revalidate();
+                        lowerPanel.repaint();
+                    },
+                    () ->
+                    {//2.
+                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
+                        if (selectedRow != -1)
+                        {
+                            String newDirPath = filePanel.getFileTable().getSelectedPathName();
+                            movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
+                        }
+                    },//3.
+                        filePanel.getFileTable()
+                );
+
+                lowerPanel.add(movePanelHolder[0]);
+                lowerPanel.revalidate();
+                lowerPanel.repaint();
+            } else
+            {
+                JOptionPane.showMessageDialog(this, "Please select a file from the left table.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-
         //TO DO: implement the other functions
-
     }
-
 }
+
+
+
+
 

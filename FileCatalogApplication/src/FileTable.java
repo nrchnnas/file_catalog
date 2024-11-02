@@ -128,11 +128,11 @@ public class FileTable
     //TO DO: might have to get more than file name.
 
     //
-    // get file name from selected row
+    // get file name or directory name from selected row
     // Returns:
-    //      file name value, otherwise null if row is not selected
+    //      name value, otherwise null if row is not selected
     //
-    public String getSelectedFileName()
+    public String getSelectedPathName()
     {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1)
