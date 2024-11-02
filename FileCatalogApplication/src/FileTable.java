@@ -19,8 +19,7 @@ import java.awt.event.MouseEvent;
 public class FileTable
 {
     private JTable table; //reference to the table that contains the files from the disk
-    private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can
-    // scroll if overflowed
+    private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
 
     public class LibraryConstants
     {

@@ -27,6 +27,7 @@ public class MoveFilePanel extends JPanel
     public MoveFilePanel(ActionListener closeListener, Runnable userChooseNewDir, FileTable fileTable)
     {
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         setOpaque(false);
 
         fileTag = new MyTag("Selected file: ", "Program", true);

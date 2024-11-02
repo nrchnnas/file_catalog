@@ -11,9 +11,10 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
-public class CatalogTable {
-    private JTable table;
-    private JScrollPane scrollPane;
+public class CatalogTable
+{
+    private JTable table; //reference to the table that contains the files in catalog
+    private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
 
     public class LibraryConstants
     {
@@ -24,7 +25,8 @@ public class CatalogTable {
         public static final String VIEW_MORE = "View More";
     }
 
-    public CatalogTable() {
+    public CatalogTable()
+    {
 
         //TO DO: convert from dummy data to real data
         //TO DO: be able to convert strings to integer and date format
@@ -79,14 +81,16 @@ public class CatalogTable {
     // Returns:
     //      scrollPane: scrollpane for the table
     //
-    public JScrollPane getScrollPane() {
+    public JScrollPane getScrollPane()
+    {
         return scrollPane;
     }
 
     //
     // set the widths of the columns
     //
-    private void setColumnWidths() {
+    private void setColumnWidths()
+    {
         TableColumn nameColumn = table.getColumnModel().getColumn(0);
         nameColumn.setPreferredWidth(150);
 
@@ -108,16 +112,21 @@ public class CatalogTable {
     // Returns:
     //      cell: the cell which is being selected/focused
     //
-    private void changeFocusColor() {
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+    private void changeFocusColor()
+    {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
+        {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+            {
                 Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                if (isSelected) {
+                if (isSelected)
+                {
                     cell.setBackground(Color.LIGHT_GRAY);
                     cell.setForeground(Color.BLACK);
-                } else {
+                } else
+                {
                     cell.setBackground(Color.WHITE);
                     cell.setForeground(Color.BLACK);
                 }
@@ -133,13 +142,16 @@ public class CatalogTable {
     // Returns:
     //      nameCell: the first column of the field that the icon is added to
     //
-    private void addIcon() {
+    private void addIcon()
+    {
         ImageIcon documentIcon = new ImageIcon("FileCatalogApplication/src/images/Document.png");
         ImageIcon folderIcon = new ImageIcon("FileCatalogApplication/src/images/Folder.png");
 
-        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
+        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
+        {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+            {
                 JLabel nameCell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 // Set icon based on if it's a file or directory
@@ -149,14 +161,15 @@ public class CatalogTable {
                 Image scaledImage = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
                 nameCell.setIcon(new ImageIcon(scaledImage));
 
-                if (isSelected) {
+                if (isSelected)
+                {
                     nameCell.setBackground(Color.LIGHT_GRAY);
                     nameCell.setForeground(Color.BLACK);
-                } else {
+                } else
+                {
                     nameCell.setBackground(Color.WHITE);
                     nameCell.setForeground(Color.BLACK);
                 }
-
                 nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
                 return nameCell;

@@ -10,11 +10,11 @@ import javax.swing.*;
 
 public class CatalogPanel extends JPanel
 {
-    MyTextField searchField;
-    MyTextField annotationField;
-    MyTextField fileTypeField;
-    MyTextField dateField;
-    private final transient CatalogTable catalogTable;
+    MyTextField searchField; //text field for searching files in catalog
+    MyTextField annotationField; //text field for searching files in catalog using annotation
+    MyTextField fileTypeField;  //text field for searching files in catalog using file type
+    MyTextField dateField;  //text field for searching files in catalog using date
+    private final transient CatalogTable catalogTable; //the table containing files in catalog
 
     CatalogPanel()
     {
@@ -113,6 +113,14 @@ public class CatalogPanel extends JPanel
         this.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
+    }
+
+    // Gets the catalog table that has been instantiated in this class
+    // Return:
+    //      -catalogTable - the table
+    public CatalogTable getCatalogTable()
+    {
+        return catalogTable;
     }
 
 }

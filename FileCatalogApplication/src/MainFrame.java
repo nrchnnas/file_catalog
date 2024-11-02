@@ -106,8 +106,8 @@ public class MainFrame extends JFrame implements ActionListener {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double screenWidth = screenSize.getWidth();
         double screenHeight = screenSize.getHeight();
-        int width = (int) (screenWidth / (double) (1440 / 1024));
-        int height = (int) (screenHeight / (double) (1440 / 1024));
+        int width = (int) (screenWidth / (1440 / 1024));
+        int height = (int) (screenHeight / (1440 / 1024));
         this.setSize(width, height);
 
         this.setLocationRelativeTo(null); //center this
@@ -125,64 +125,83 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e)
     {
         // Adds the add annotation panel to lowerPanel if row is selected
-        if (e.getSource() == addButton)
+        if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
-            if (filePanel.getFileTable().isRowSelected())
-            {
-                lowerPanel.removeAll();
-                AddToCatalogPanel addPanel = new AddToCatalogPanel(event ->
-                {
-                    lowerPanel.removeAll();
-                    lowerPanel.revalidate();
-                    lowerPanel.repaint();
-                });
+            displayPanel(new AddToCatalogPanel(event -> clearLowerPanel()));
 
-                lowerPanel.add(addPanel);
-                lowerPanel.revalidate();
-                lowerPanel.repaint();
-            } else
-            {
-                JOptionPane.showMessageDialog(this, "Please select a file from the left table.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
         // Adds the move file panel to lowerPanel if row is selected
-        } else if (e.getSource() == moveFileButton)
+        } else if (e.getSource() == moveFileButton && filePanel.getFileTable().isRowSelected())
         {
-            if (filePanel.getFileTable().isRowSelected())
-            {
-                lowerPanel.removeAll();
+            // Wrap MoveFilePanel in a final array to allow usage within the lambda
+            final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
+            //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory, 3. table reference
+            movePanelHolder[0] = new MoveFilePanel(
+                //1
+                event -> clearLowerPanel(),
+                //2
+                () ->
+                {
+                    int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
+                    if (selectedRow != -1)
+                    {
+                        String newDirPath = filePanel.getFileTable().getSelectedPathName(); //get name of directory
+                        movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
+                    }
+                },
+                //3
+                filePanel.getFileTable()
+            );
+            displayPanel(movePanelHolder[0]);
 
-                // Wrap MoveFilePanel in a final array to allow usage within the lambda
-                final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
-
-                //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory, 3. table reference
-                movePanelHolder[0] = new MoveFilePanel(
-                    event ->
-                    {//1.
-                        lowerPanel.removeAll();
-                        lowerPanel.revalidate();
-                        lowerPanel.repaint();
-                    },
-                    () ->
-                    {//2.
-                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
-                        if (selectedRow != -1)
+        // Adds the compare file panel to lowerPanel
+        } else if (e.getSource() == compareButton)
+        {
+            // Wrap CompareFilePanel in a final array to allow usage within the lambda
+            final CompareFilePanel[] comparePanelHolder = new CompareFilePanel[1];
+            //CompareFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a file, 3. table reference
+            comparePanelHolder[0] = new CompareFilePanel(
+                //1
+                event -> clearLowerPanel(),
+                //2
+                () ->
+                {
+                    int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
+                    if (selectedRow != -1)
+                    {
+                        String selectedFile = filePanel.getFileTable().getSelectedPathName(); //get name of file
+                        if (!comparePanelHolder[0].fileOneTag.isVisible()) //if first tag isn't visible meaning first file has not been selected
                         {
-                            String newDirPath = filePanel.getFileTable().getSelectedPathName();
-                            movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
+                            comparePanelHolder[0].setFirstTag(selectedFile); //set first file
+                        } else //if first tag is visible meaning first file has been selected
+                        {
+                            comparePanelHolder[0].setSecondFile(selectedFile); //set second file
                         }
-                    },//3.
-                        filePanel.getFileTable()
-                );
+                    }
+                },
+                filePanel.getFileTable()
+        );
+        displayPanel(comparePanelHolder[0]);
+    }
+        //TO DO: implement the validate button
+    }
 
-                lowerPanel.add(movePanelHolder[0]);
-                lowerPanel.revalidate();
-                lowerPanel.repaint();
-            } else
-            {
-                JOptionPane.showMessageDialog(this, "Please select a file from the left table.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        //TO DO: implement the other functions
+    //Displays panels after clicking a specific button and repainting lowerPanel
+    //Arguments:
+    //      -panel: panel to be displayed
+    private void displayPanel(JPanel panel)
+    {
+        lowerPanel.removeAll();
+        lowerPanel.add(panel);
+        lowerPanel.revalidate();
+        lowerPanel.repaint();
+    }
+
+    //Clears components within lower panel
+    private void clearLowerPanel()
+    {
+        lowerPanel.removeAll();
+        lowerPanel.revalidate();
+        lowerPanel.repaint();
     }
 }
 

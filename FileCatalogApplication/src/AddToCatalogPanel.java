@@ -17,14 +17,14 @@ public class AddToCatalogPanel extends JPanel
     JButton cancelButton; //button to cancel
     JButton addButton; //button to add to catalog
     JTextArea addAnnotationField; //text field for annotation
-    private static final String placeholderText = "Add an annotation: "; //placeholder text inside the text field
+    private static final String PLACEHOLDER_TEXT = "Add an annotation: "; //placeholder text inside the text field
 
     public AddToCatalogPanel(ActionListener closeListener)
     {
         setLayout(new FlowLayout());
         setOpaque(false);
 
-        addAnnotationField = new JTextArea(placeholderText);
+        addAnnotationField = new JTextArea(PLACEHOLDER_TEXT);
         addAnnotationField.setLineWrap(true);
         addAnnotationField.setWrapStyleWord(true);
         addAnnotationField.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
@@ -42,7 +42,7 @@ public class AddToCatalogPanel extends JPanel
             //
             public void focusGained(FocusEvent e)
             {
-                if (addAnnotationField.getText().equals(placeholderText))
+                if (addAnnotationField.getText().equals(PLACEHOLDER_TEXT))
                 {
                     addAnnotationField.setText("");
                     addAnnotationField.setForeground(Color.BLACK);
@@ -60,7 +60,7 @@ public class AddToCatalogPanel extends JPanel
             {
                 if (addAnnotationField.getText().isEmpty())
                 {
-                    addAnnotationField.setText(placeholderText);
+                    addAnnotationField.setText(PLACEHOLDER_TEXT);
                     addAnnotationField.setForeground(Color.GRAY);
                 }
             }

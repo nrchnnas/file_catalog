@@ -22,7 +22,7 @@ public class FilePanel extends JPanel implements ActionListener
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left Dark.png");
+        ImageIcon UNDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Left Light.png");
         ImageIcon REDO_ICON = new ImageIcon("FileCatalogApplication/src/images/Chevron Right Light.png");
         ImageIcon SEARCH_ICON = new ImageIcon("FileCatalogApplication/src/images/Search.png");
 
