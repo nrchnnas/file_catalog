@@ -16,7 +16,7 @@ public class CatalogPanel extends JPanel
     MyTextField dateField;  //text field for searching files in catalog using date
     private final transient CatalogTable catalogTable; //the table containing files in catalog
 
-    CatalogPanel()
+    CatalogPanel(MainFrame mainFrame)
     {
 
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
@@ -89,7 +89,7 @@ public class CatalogPanel extends JPanel
 
         //---------------------Table Panel-----------------------
 
-        catalogTable = new CatalogTable();
+        catalogTable = new CatalogTable(mainFrame);
         JScrollPane tableScrollPane = catalogTable.getScrollPane();
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         tableScrollPane.setBackground(Color.WHITE);
@@ -114,13 +114,4 @@ public class CatalogPanel extends JPanel
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
     }
-
-    // Gets the catalog table that has been instantiated in this class
-    // Return:
-    //      -catalogTable - the table
-    public CatalogTable getCatalogTable()
-    {
-        return catalogTable;
-    }
-
 }

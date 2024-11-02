@@ -91,7 +91,7 @@ public class CompareFilePanel extends JPanel
     {
         JButton button = new JButton(label);
         updateButtonState(button, false);
-        button.addActionListener(e -> 
+        button.addActionListener(e ->
         {
             userChooseFile.run();
             String selectedFileName = fileTable.getSelectedPathName();

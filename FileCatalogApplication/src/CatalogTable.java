@@ -10,22 +10,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CatalogTable
 {
-    private JTable table; //reference to the table that contains the files in catalog
+    JTable table; //reference to the table that contains the files in catalog
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
+    //TO DO: needs to be deleted just for demonstration
+    private ArrayList<FileInfo> fileInfos = new ArrayList<>();
 
-    public class LibraryConstants
-    {
-        public static final String PROGRAM_NAME = "Program";
-        public static final String LANGUAGE = "C";
-        public static final String LAST_UPDATED = "21.08.2019 17:00";
-        public static final String FILE_VIEWER_DESCRIPTION = "Program to help view files in disk";
-        public static final String VIEW_MORE = "View More";
-    }
-
-    public CatalogTable()
+    //Arguments: passing the mainFrame
+    public CatalogTable(MainFrame mainFrame)
     {
 
         //TO DO: convert from dummy data to real data
@@ -33,16 +28,21 @@ public class CatalogTable
         //TO DO: if directory, ext. and size must be empty
 
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
-        Object[][] data =
-                {
-                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
-                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
-                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
-                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
-                        {LibraryConstants.PROGRAM_NAME, LibraryConstants.LANGUAGE, LibraryConstants.LAST_UPDATED, LibraryConstants.FILE_VIEWER_DESCRIPTION, LibraryConstants.VIEW_MORE},
-                };
+        fileInfos.add(new FileInfo("Program1", "C", "166B", "21.08.2019 17:00", "/path/to/Program1", "Program to compare two source files."));
+        fileInfos.add(new FileInfo("Program2", "Java", "239GB", "22.08.2019 18:00", "/path/to/Program2", "Program that annotates a source file."));
 
         //---------------------Table----------------------
+
+        Object[][] data = new Object[fileInfos.size()][5];
+        for (int i = 0; i < fileInfos.size(); i++)
+        {
+            FileInfo fileInfo = fileInfos.get(i);
+            data[i][0] = fileInfo.getName();
+            data[i][1] = fileInfo.getExtension();
+            data[i][2] = fileInfo.getLastEditedDate();
+            data[i][3] = fileInfo.getAnnotation();
+            data[i][4] = "View More";
+        }
 
         table = new JTable(data, columns);
         table.setRowHeight(20);
@@ -60,7 +60,7 @@ public class CatalogTable
 
         TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
         viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
-        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More")));
+        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
 
         //------------------Table Header-------------------
 
@@ -178,4 +178,18 @@ public class CatalogTable
 
         table.getColumnModel().getColumn(0).setCellRenderer(iconRenderer);
     }
+
+    //
+    // Get file information at specific index
+    // Arguments:
+    //      -rowIndex: index of row that is selected
+    // Returns the file info at specific index
+    //
+    public FileInfo getFileAt(int rowIndex)
+    {
+        return fileInfos.get(rowIndex);
+    }
+
 }
+
+

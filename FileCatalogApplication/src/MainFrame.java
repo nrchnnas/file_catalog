@@ -78,7 +78,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 addButton.setEnabled(rowSelected);
                 moveFileButton.setEnabled(rowSelected);
         });
-        CatalogPanel catalogPanel = new CatalogPanel();
+        CatalogPanel catalogPanel = new CatalogPanel(this);
 
         //setting the layout of the two tables using Grid Bag Layout
         gbc.gridx = 0;
@@ -174,7 +174,7 @@ public class MainFrame extends JFrame implements ActionListener {
                             comparePanelHolder[0].setFirstTag(selectedFile); //set first file
                         } else //if first tag is visible meaning first file has been selected
                         {
-                            comparePanelHolder[0].setSecondFile(selectedFile); //set second file
+                            comparePanelHolder[0].setSecondTag(selectedFile); //set second file
                         }
                     }
                 },
@@ -188,7 +188,7 @@ public class MainFrame extends JFrame implements ActionListener {
     //Displays panels after clicking a specific button and repainting lowerPanel
     //Arguments:
     //      -panel: panel to be displayed
-    private void displayPanel(JPanel panel)
+   public void displayPanel(JPanel panel)
     {
         lowerPanel.removeAll();
         lowerPanel.add(panel);
