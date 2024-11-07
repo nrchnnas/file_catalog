@@ -1,12 +1,12 @@
 package utilities;
 
 public class FileRecord {
-    private final int id;
-    private final String fileName;
-    private final String filePath;
-    private final String annotation;
-    private final String modificationDate;
-    private final String fileType;
+    private int id;
+    private String fileName;
+    private String filePath;
+    private String annotation;
+    private String modificationDate;
+    private String fileType;
 
     public FileRecord(int id, String fileName, String filePath, String annotation, String modificationDate, String fileType) {
         this.id = id;
@@ -16,7 +16,7 @@ public class FileRecord {
         this.modificationDate = modificationDate;
         this.fileType = fileType;
     }
-
+    
     // Getters
     public int getId() { return id; }
     public String getFileName() { return fileName; }
@@ -25,6 +25,7 @@ public class FileRecord {
     public String getModificationDate() { return modificationDate; }
     public String getFileType() { return fileType; }
 
+    // toString method for easy debugging
     @Override
     public String toString() {
         return "FileRecord{" +
@@ -37,3 +38,4 @@ public class FileRecord {
                 '}';
     }
 }
+
