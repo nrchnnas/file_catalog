@@ -1,1 +1,8 @@
+Main.class
+utilities\FileComparison.class
+utilities\FileValidation.class
 yourName\App.class
+utilities\DiskComparison.class
+utilities\FileRecord.class
+utilities\DatabaseUtils.class
+utilities\FileCatalog.class
