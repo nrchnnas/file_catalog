@@ -13,6 +13,12 @@ import java.util.logging.Logger;
 public class FileCatalog {
 
     private static final Logger logger = Logger.getLogger(FileCatalog.class.getName());
+    private static final String NO_FILE_FOUND_MESSAGE = "No file found with ID: %d";
+
+    // Private constructor to prevent instantiation
+    private FileCatalog() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
 
     // Initializes the catalog table if it doesn't exist
     public static void initializeCatalog() {
@@ -68,12 +74,12 @@ public class FileCatalog {
             pstmt.setInt(2, fileId);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.info("File name updated for file ID: " + fileId);
+                logger.info(String.format("File name updated for file ID: %d", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to update file name for file ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to update file name for file ID: %d", fileId), e);
         }
     }
 
@@ -91,12 +97,12 @@ public class FileCatalog {
             pstmt.setInt(2, fileId);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.info("File path updated for file ID: " + fileId);
+                logger.info(String.format("File path updated for file ID: %d", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to update file path for file ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to update file path for file ID: %d", fileId), e);
         }
     }
 
@@ -114,12 +120,12 @@ public class FileCatalog {
             pstmt.setInt(2, fileId);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.info("Annotation updated for file ID: " + fileId);
+                logger.info(String.format("Annotation updated for file ID: %d", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to update annotation for file ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to update annotation for file ID: %d", fileId), e);
         }
     }
 
@@ -137,12 +143,12 @@ public class FileCatalog {
             pstmt.setInt(2, fileId);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.info("Modification date updated for file ID: " + fileId);
+                logger.info(String.format("Modification date updated for file ID: %d", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to update modification date for file ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to update modification date for file ID: %d", fileId), e);
         }
     }
 
@@ -160,12 +166,12 @@ public class FileCatalog {
             pstmt.setInt(2, fileId);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.info("File type updated for file ID: " + fileId);
+                logger.info(String.format("File type updated for file ID: %d", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to update file type for file ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to update file type for file ID: %d", fileId), e);
         }
     }
 
@@ -202,12 +208,12 @@ public class FileCatalog {
             pstmt.setInt(1, fileId);
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
-                logger.info("File with ID " + fileId + " deleted from catalog.");
+                logger.info(String.format("File with ID %d deleted from catalog.", fileId));
             } else {
-                logger.warning("No file found with ID: " + fileId);
+                logger.warning(String.format(NO_FILE_FOUND_MESSAGE, fileId));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to delete file with ID: " + fileId, e);
+            logger.log(Level.SEVERE, String.format("Failed to delete file with ID: %d", fileId), e);
         }
     }
 }
