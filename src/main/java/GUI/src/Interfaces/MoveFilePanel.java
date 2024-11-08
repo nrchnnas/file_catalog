@@ -17,7 +17,6 @@ public class MoveFilePanel extends JPanel
     private final JButton moveButton; // button to move file to new directory
     private final JButton chooseNewDirButton; // button for selecting a new directory
     private JButton deleteButton; // button to delete/reset newDirTag
-    private final MyTag fileTag; // tag to display file information
     private final MyTag currentDirTag; // tag to display current directory information
     private final MyTag newDirTag; // tag to display selected new directory
 
@@ -31,7 +30,6 @@ public class MoveFilePanel extends JPanel
         setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         setOpaque(false);
 
-        fileTag = new MyTag("Selected file: ", "Program", true);
         currentDirTag = new MyTag("Current directory: ", "JavaProjects", false);
         newDirTag = new MyTag("New directory: ", "", false);
         newDirTag.setVisible(false); // initially hidden
@@ -53,7 +51,6 @@ public class MoveFilePanel extends JPanel
 
         //-----------------------Top Panel--------------------------
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(fileTag);
         topPanel.add(currentDirTag);
         topPanel.add(chooseNewDirButton);
         topPanel.add(newDirTag);

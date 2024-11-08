@@ -15,6 +15,8 @@ import javax.swing.*;
 public class MainFrame extends JFrame implements ActionListener
 {
 
+    JButton openFileButton; //open file button
+    JButton editFileNameButton; //edit file name button
     JButton compareButton; //compare source files button
     JButton validateButton; //validate catalog button
     JButton addButton; //add to catalog button
@@ -27,6 +29,8 @@ public class MainFrame extends JFrame implements ActionListener
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
+        ImageIcon OPEN_ICON = new ImageIcon("src/main/java/assets/Open.png");
+        ImageIcon EDIT_ICON = new ImageIcon("src/main/java/assets/Edit.png");
         ImageIcon COMPARE_ICON = new ImageIcon("src/main/java/assets/Compare.png");
         ImageIcon VALIDATE_ICON = new ImageIcon("src/main/java/assets/Refresh.png");
         ImageIcon ADD_ICON = new ImageIcon("src/main/java/assets/Add.png");
@@ -34,36 +38,46 @@ public class MainFrame extends JFrame implements ActionListener
 
         //-------------------------Buttons--------------------------
 
-        addButton = new JButton();
+        openFileButton = new JButton(OPEN_ICON);
+        openFileButton.addActionListener(this);
+        openFileButton.setText("Open File");
+        openFileButton.addActionListener(this);
+        openFileButton.setEnabled(false);
+
+        editFileNameButton = new JButton(EDIT_ICON);
+        editFileNameButton.addActionListener(this);
+        editFileNameButton.setText("Edit File name");
+        editFileNameButton.addActionListener(this);
+        editFileNameButton.setEnabled(false);
+
+        addButton = new JButton(ADD_ICON);
         addButton.setFocusable(false);
         addButton.setText("Add to catalog");
-        addButton.setIcon(ADD_ICON);
         addButton.addActionListener(this);
         addButton.setEnabled(false);
 
-        moveFileButton = new JButton();
+        moveFileButton = new JButton(MOVE_ICON);
         moveFileButton.setFocusable(false);
         moveFileButton.setText("Move Source files");
-        moveFileButton.setIcon(MOVE_ICON);
         moveFileButton.addActionListener(this);
         moveFileButton.setEnabled(false);
 
-        compareButton = new JButton();
+        compareButton = new JButton(COMPARE_ICON);
         compareButton.setFocusable(false);
         compareButton.setText("Compare Source Files");
-        compareButton.setIcon(COMPARE_ICON);
         compareButton.addActionListener(this);
 
-        validateButton = new JButton();
+        validateButton = new JButton(VALIDATE_ICON);
         validateButton.setFocusable(false);
         validateButton.setText("Validate Catalog");
-        validateButton.setIcon(VALIDATE_ICON);
         validateButton.addActionListener(this);
 
         //-----------------------Upper Panel------------------------
 
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        upperPanel.add(openFileButton);
+        upperPanel.add(editFileNameButton);
         upperPanel.add(addButton);
         upperPanel.add(moveFileButton);
         upperPanel.add(compareButton);
@@ -79,6 +93,8 @@ public class MainFrame extends JFrame implements ActionListener
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
         {
                 boolean rowSelected = filePanel.getFileTable().isRowSelected(); //rowSelected is boolean if row is selected or not
+                openFileButton.setEnabled(rowSelected);
+                editFileNameButton.setEnabled(rowSelected);
                 addButton.setEnabled(rowSelected);
                 moveFileButton.setEnabled(rowSelected);
         });
@@ -128,8 +144,26 @@ public class MainFrame extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        // Opens file if row is selected
+        if (e.getSource() == openFileButton && filePanel.getFileTable().isRowSelected())
+        {
+            //TO DO: opens source file
+
+        // Edits file name of specified row if row is selected
+        } else if (e.getSource() == editFileNameButton && filePanel.getFileTable().isRowSelected())
+        {
+            int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
+            String currentFileName = (String) filePanel.getFileTable().getTable().getValueAt(selectedRow, 0);
+            String newFileName = JOptionPane.showInputDialog(this, "Enter new file name:", currentFileName);
+            if (newFileName != null && !newFileName.trim().isEmpty())
+            {
+                filePanel.getFileTable().getTable().setValueAt(newFileName, selectedRow, 0);
+            }
+
+            //TO DO: change file name in actual directory
+
         // Adds the add annotation panel to lowerPanel if row is selected
-        if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
+        } else if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
             displayPanel(new AddToCatalogPanel(event -> clearLowerPanel()));
 

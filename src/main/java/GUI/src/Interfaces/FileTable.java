@@ -61,6 +61,7 @@ public class FileTable
         table.setBackground(Color.decode("#CFCFCF"));
         table.setFocusable(false);
 
+
         setColumnWidths();
         //TO DO: if its directory, add file icon
         addIcon();
@@ -202,8 +203,8 @@ public class FileTable
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon("FileCatalogApplication/src/images/Document.png");
-        ImageIcon folderIcon = new ImageIcon("FileCatalogApplication/src/images/Folder.png");
+        ImageIcon documentIcon = new ImageIcon("src/main/java/assets/Document.png");
+        ImageIcon folderIcon = new ImageIcon("src/main/java/assets/Folder.png");
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {

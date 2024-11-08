@@ -69,8 +69,9 @@ public class AddToCatalogPanel extends JPanel
 
         add(addAnnotationField);
 
-        //TO DO: when add button clicked, add to catalog
+        //TO DO: when add button clicked, add to catalog + add annotation
         addButton = new JButton("Add");
+        addButton.addActionListener(closeListener);
         add(addButton);
 
         cancelButton = new JButton("Cancel");
