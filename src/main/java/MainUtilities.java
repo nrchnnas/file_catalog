@@ -7,11 +7,7 @@ import java.nio.file.attribute.FileTime;
 
 public class MainUtilities {
     private static final Logger logger = Logger.getLogger(MainUtilities.class.getName());
-
-    // Retrieve the default directory path from an environment variable or system property
-    private static final String DEFAULT_DIRECTORY_PATH =
-            System.getProperty("default.directory.path",
-                    System.getenv("DEFAULT_DIRECTORY_PATH") != null ? System.getenv("DEFAULT_DIRECTORY_PATH") : "C:/Users/yourusername/Documents");
+    private static final String DEFAULT_DIRECTORY_PATH = "C:/Users/yourusername/Documents";
 
     public static void main(String[] args) {
         // Test database connection
@@ -29,14 +25,14 @@ public class MainUtilities {
         testFileComparison(DEFAULT_DIRECTORY_PATH + "/file1.txt", DEFAULT_DIRECTORY_PATH + "/file2.txt");
         testDiskComparison(DEFAULT_DIRECTORY_PATH + "/file1.txt", DEFAULT_DIRECTORY_PATH + "/file2.txt");
 
-        // Disk Reader operations
+        // Disk Reader operations with extended details
         listDirectoryContents(DEFAULT_DIRECTORY_PATH);
         listSubdirectories(DEFAULT_DIRECTORY_PATH);
         getParentDirectory(DEFAULT_DIRECTORY_PATH);
 
         // Retrieve file content and validate file
         retrieveFileContent(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt");
-        validateFile("path/to/file", 1024L, "expected/path", FileTime.fromMillis(System.currentTimeMillis()));
+        validateFile(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt", 1024, DEFAULT_DIRECTORY_PATH, FileTime.fromMillis(System.currentTimeMillis()));
     }
 
     private static void testDatabaseConnection() {
@@ -136,4 +132,3 @@ public class MainUtilities {
                 : "File validation failed for: " + filePath);
     }
 }
-
