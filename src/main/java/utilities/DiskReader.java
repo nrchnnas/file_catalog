@@ -1,6 +1,7 @@
 package utilities;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -8,12 +9,13 @@ import java.util.logging.Logger;
 
 public class DiskReader {
     private static final Logger logger = Logger.getLogger(DiskReader.class.getName());
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     // Private constructor to prevent instantiation
     private DiskReader() {}
 
     /**
-     * Lists all contents (files and directories) in the specified directory.
+     * Lists all contents (files and directories) in the specified directory, including extension, size, and last modified date.
      *
      * @param directoryPath The path of the directory to list.
      * @return A list of DirectoryContent objects representing each file and directory.
@@ -32,7 +34,18 @@ public class DiskReader {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                contents.add(new DirectoryContent(file.getName(), file.isDirectory(), file.getAbsolutePath()));
+                String extension = getFileExtension(file);
+                long size = file.length();
+                String lastModified = dateFormat.format(file.lastModified());
+
+                contents.add(new DirectoryContent(
+                        file.getName(),
+                        file.isDirectory(),
+                        file.getAbsolutePath(),
+                        extension,
+                        size,
+                        lastModified
+                ));
             }
         } else {
             logger.warning(() -> "Unable to retrieve contents of directory: " + directoryPath);
@@ -62,7 +75,14 @@ public class DiskReader {
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    subdirectories.add(new DirectoryContent(file.getName(), true, file.getAbsolutePath()));
+                    subdirectories.add(new DirectoryContent(
+                            file.getName(),
+                            true,
+                            file.getAbsolutePath(),
+                            "",  // No extension for directories
+                            0,   // Size is not relevant for directories
+                            dateFormat.format(file.lastModified())
+                    ));
                 }
             }
         } else {
@@ -84,12 +104,34 @@ public class DiskReader {
 
         // Check if parent directory exists and is a directory
         if (parent != null && parent.isDirectory()) {
-            return new DirectoryContent(parent.getName(), true, parent.getAbsolutePath());
+            return new DirectoryContent(
+                    parent.getName(),
+                    true,
+                    parent.getAbsolutePath(),
+                    "",  // No extension for directories
+                    0,   // Size is not relevant for directories
+                    dateFormat.format(parent.lastModified())
+            );
         } else {
             logger.warning(() -> "No parent directory found for: " + directoryPath);
             return null;
         }
     }
-}
 
+    /**
+     * Utility method to get the file extension.
+     *
+     * @param file The file for which to get the extension.
+     * @return The file extension as a string, or an empty string if none exists.
+     */
+    private static String getFileExtension(File file) {
+        String name = file.getName();
+        int lastIndex = name.lastIndexOf(".");
+        if (lastIndex > 0 && lastIndex < name.length() - 1) {
+            return name.substring(lastIndex + 1);
+        } else {
+            return "";  // No extension found
+        }
+    }
+}
 
