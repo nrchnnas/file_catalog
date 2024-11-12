@@ -175,7 +175,6 @@ public class FileCatalog {
         }
     }
 
-    // Retrieves all files from the catalog
     public static List<FileRecord> getAllFiles() {
         List<FileRecord> files = new ArrayList<>();
         String sql = "SELECT * FROM file_catalog";
@@ -189,7 +188,8 @@ public class FileCatalog {
                         rs.getString("file_path"),
                         rs.getString("annotation"),
                         rs.getString("modification_date"),
-                        rs.getString("file_type")
+                        rs.getString("file_type"),
+                        rs.getLong("file_size") // Retrieve file size
                 );
                 files.add(file);
             }
@@ -199,6 +199,7 @@ public class FileCatalog {
         }
         return files;
     }
+
 
     // Deletes a file from the catalog by ID with confirmation logging
     public static void deleteFile(int fileId) {
