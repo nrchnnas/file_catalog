@@ -8,6 +8,11 @@ import java.nio.file.attribute.FileTime;
 public class MainUtilities {
     private static final Logger logger = Logger.getLogger(MainUtilities.class.getName());
 
+    // Retrieve the default directory path from an environment variable or system property
+    private static final String DEFAULT_DIRECTORY_PATH =
+            System.getProperty("default.directory.path",
+                    System.getenv("DEFAULT_DIRECTORY_PATH") != null ? System.getenv("DEFAULT_DIRECTORY_PATH") : "C:/Users/yourusername/Documents");
+
     public static void main(String[] args) {
         // Test database connection
         testDatabaseConnection();
@@ -19,11 +24,19 @@ public class MainUtilities {
         updateFileNameInCatalog(1, "NewSampleFile.txt");
         listAllFiles();
         deleteFileFromCatalog(1);
-        testFileComparison("C:/Users/yourusername/Documents/file1.txt", "C:/Users/yourusername/Documents/file2.txt");
-        testDiskComparison("C:/Users/yourusername/Documents/file1.txt", "C:/Users/yourusername/Documents/file2.txt");
-        listDirectoryContents("C:/Users/yourusername/Documents");
-        retrieveFileContent("C:/Users/yourusername/Documents/SampleFile.txt");
-        validateFile("C:/Users/yourusername/Documents/SampleFile.txt", 1024, "C:/Users/yourusername/Documents", FileTime.fromMillis(System.currentTimeMillis()));
+
+        // Test file comparison and disk comparison
+        testFileComparison(DEFAULT_DIRECTORY_PATH + "/file1.txt", DEFAULT_DIRECTORY_PATH + "/file2.txt");
+        testDiskComparison(DEFAULT_DIRECTORY_PATH + "/file1.txt", DEFAULT_DIRECTORY_PATH + "/file2.txt");
+
+        // Disk Reader operations
+        listDirectoryContents(DEFAULT_DIRECTORY_PATH);
+        listSubdirectories(DEFAULT_DIRECTORY_PATH);
+        getParentDirectory(DEFAULT_DIRECTORY_PATH);
+
+        // Retrieve file content and validate file
+        retrieveFileContent(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt");
+        validateFile(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt", 1024, DEFAULT_DIRECTORY_PATH, FileTime.fromMillis(System.currentTimeMillis()));
     }
 
     private static void testDatabaseConnection() {
@@ -32,9 +45,7 @@ public class MainUtilities {
                 logger.info("Database connection successful.");
             }
         } catch (Exception e) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.severe("Failed to connect to database: " + e.getMessage());
-            }
+            logger.log(Level.SEVERE, () -> "Failed to connect to database: " + e.getMessage());
         }
     }
 
@@ -46,90 +57,83 @@ public class MainUtilities {
         String fileType = ".txt";
 
         FileCatalog.addFile(fileName, filePath, annotation, modificationDate, fileType);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Sample file added to catalog.");
-        }
+        logger.info("Sample file added to catalog.");
     }
 
     private static void updateFileAnnotation(int fileId, String newAnnotation) {
         FileCatalog.updateAnnotation(fileId, newAnnotation);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Annotation updated for file ID " + fileId);
-        }
+        logger.info(() -> "Annotation updated for file ID " + fileId);
     }
 
     private static void updateFileNameInCatalog(int fileId, String newFileName) {
         FileCatalog.updateFileName(fileId, newFileName);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("File name updated for file ID " + fileId);
-        }
+        logger.info(() -> "File name updated for file ID " + fileId);
     }
 
     private static void listAllFiles() {
         List<FileRecord> files = FileCatalog.getAllFiles();
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Listing all files in catalog:");
-            files.forEach(file -> logger.info(file.toString())); // 
-        }
+        logger.info("Listing all files in catalog:");
+        files.forEach(file -> logger.info(file.toString()));
     }
 
     private static void deleteFileFromCatalog(int fileId) {
         FileCatalog.deleteFile(fileId);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("File with ID " + fileId + " deleted from catalog.");
-        }
+        logger.info(() -> "File with ID " + fileId + " deleted from catalog.");
     }
 
     private static void testFileComparison(String filePath1, String filePath2) {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Comparing files line by line:");
-        }
+        logger.info("Comparing files line by line:");
         try {
             FileComparison.compareFiles(filePath1, filePath2);
         } catch (Exception e) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.severe("Error during file comparison: " + e.getMessage());
-            }
+            logger.log(Level.SEVERE, () -> "Error during file comparison: " + e.getMessage());
         }
     }
 
     private static void testDiskComparison(String filePath1, String filePath2) {
         try {
             boolean metadataMatch = DiskComparison.compareFileMetadata(filePath1, filePath2);
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(metadataMatch
-                        ? "File metadata match for " + filePath1 + " and " + filePath2
-                        : "File metadata differ for " + filePath1 + " and " + filePath2);
-            }
+            logger.info(() -> metadataMatch
+                    ? "File metadata match for " + filePath1 + " and " + filePath2
+                    : "File metadata differ for " + filePath1 + " and " + filePath2);
         } catch (Exception e) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.severe("Error during disk comparison: " + e.getMessage()); 
-            }
+            logger.log(Level.SEVERE, () -> "Error during disk comparison: " + e.getMessage());
         }
     }
 
     private static void listDirectoryContents(String directoryPath) {
-        DiskReader.listDirectoryContents(directoryPath);
+        List<DirectoryContent> contents = DiskReader.listDirectoryContents(directoryPath);
+        logger.info(() -> "Contents of directory " + directoryPath + ":");
+        contents.forEach(content -> logger.info(content.toString()));
+    }
+
+    private static void listSubdirectories(String directoryPath) {
+        List<DirectoryContent> subdirectories = DiskReader.listSubdirectories(directoryPath);
+        logger.info(() -> "Subdirectories in " + directoryPath + ":");
+        subdirectories.forEach(subdirectory -> logger.info(subdirectory.toString()));
+    }
+
+    private static void getParentDirectory(String directoryPath) {
+        DirectoryContent parentDirectory = DiskReader.getParentDirectory(directoryPath);
+        if (parentDirectory != null) {
+            logger.info(() -> "Parent directory: " + parentDirectory.toString());
+        } else {
+            logger.warning(() -> "No parent directory found for: " + directoryPath);
+        }
     }
 
     private static void retrieveFileContent(String filePath) {
         String content = FileContent.retrieveFileContent(filePath);
-        if (content != null && logger.isLoggable(Level.INFO)) {
-            logger.info("File content: " + content);
+        if (content != null) {
+            logger.info(() -> "File content: " + content);
         }
     }
 
     private static void validateFile(String filePath, long expectedSize, String expectedPath, FileTime expectedLastModified) {
         boolean isValid = FileValidation.validateFile(filePath, expectedSize, expectedPath, expectedLastModified);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(isValid
-                    ? "File validation successful for: " + filePath
-                    : "File validation failed for: " + filePath);
-        }
+        logger.info(() -> isValid
+                ? "File validation successful for: " + filePath
+                : "File validation failed for: " + filePath);
     }
 }
-
-
-
-
 
