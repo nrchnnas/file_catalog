@@ -6,6 +6,9 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.DirectoryContent;
+import utilities.DiskReader;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -15,7 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.util.List;
 
 public class FileTable
 {
@@ -32,25 +35,19 @@ public class FileTable
 
     public FileTable(JComponent parentComponent)
     {
-
         //TO DO: convert from dummy data to real data
         //TO DO: be able to convert strings to integer and date format
         //TO DO: if directory, ext. and size must be empty
-
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/Users/User");
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
-        Object[][] data =
-        {
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-            {FileTable.LibraryConstants.PROGRAM_NAME, FileTable.LibraryConstants.LANGUAGE, FileTable.LibraryConstants.SIZE, FileTable.LibraryConstants.LAST_UPDATED},
-        };
+        Object[][] data = new Object[fileRecords.size()][4];
+        for (int i = 0; i < fileRecords.size(); i++){
+            DirectoryContent currentRecord = fileRecords.get(i);
+            data[i][0] = currentRecord.getName();
+            data[i][1] = currentRecord.getExtension();
+            data[i][2] = currentRecord.getSize();
+            data[i][3] = currentRecord.getLastModified();
+        }
 
         //---------------------Table----------------------
 
