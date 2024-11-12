@@ -36,7 +36,7 @@ public class MainUtilities {
 
         // Retrieve file content and validate file
         retrieveFileContent(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt");
-        validateFile(DEFAULT_DIRECTORY_PATH + "/SampleFile.txt", 1024, DEFAULT_DIRECTORY_PATH, FileTime.fromMillis(System.currentTimeMillis()));
+        validateFile("path/to/file", 1024L, "expected/path", FileTime.fromMillis(System.currentTimeMillis()));
     }
 
     private static void testDatabaseConnection() {
