@@ -42,13 +42,11 @@ public class MainFrame extends JFrame implements ActionListener
         openFileButton.addActionListener(this);
         openFileButton.setText("Open File");
         openFileButton.addActionListener(this);
-        openFileButton.setEnabled(false);
 
         editFileNameButton = new JButton(EDIT_ICON);
         editFileNameButton.addActionListener(this);
         editFileNameButton.setText("Edit File name");
         editFileNameButton.addActionListener(this);
-        editFileNameButton.setEnabled(false);
 
         addButton = new JButton(ADD_ICON);
         addButton.setFocusable(false);
@@ -92,11 +90,9 @@ public class MainFrame extends JFrame implements ActionListener
         //sets the listener which enables the buttons if row is selected from file table
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
         {
-                boolean rowSelected = filePanel.getFileTable().isRowSelected(); //rowSelected is boolean if row is selected or not
-                openFileButton.setEnabled(rowSelected);
-                editFileNameButton.setEnabled(rowSelected);
-                addButton.setEnabled(rowSelected);
-                moveFileButton.setEnabled(rowSelected);
+            boolean rowSelected = filePanel.getFileTable().isRowSelected(); //rowSelected is boolean if row is selected or not
+            addButton.setEnabled(rowSelected);
+            moveFileButton.setEnabled(rowSelected);
         });
         CatalogPanel catalogPanel = new CatalogPanel(this);
 
@@ -144,13 +140,13 @@ public class MainFrame extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        // Opens file if row is selected
-        if (e.getSource() == openFileButton && filePanel.getFileTable().isRowSelected())
+        // Opens selected file
+        if (e.getSource() == openFileButton)
         {
             //TO DO: opens source file
 
-        // Edits file name of specified row if row is selected
-        } else if (e.getSource() == editFileNameButton && filePanel.getFileTable().isRowSelected())
+        // Edits selected file name
+        } else if (e.getSource() == editFileNameButton)
         {
             int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
             String currentFileName = (String) filePanel.getFileTable().getTable().getValueAt(selectedRow, 0);
@@ -174,20 +170,20 @@ public class MainFrame extends JFrame implements ActionListener
             final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
             //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory, 3. table reference
             movePanelHolder[0] = new MoveFilePanel(
-                //1
-                event -> clearLowerPanel(),
-                //2
-                () ->
-                {
-                    int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
-                    if (selectedRow != -1)
+                    //1
+                    event -> clearLowerPanel(),
+                    //2
+                    () ->
                     {
-                        String newDirPath = filePanel.getFileTable().getSelectedPathName(); //get name of directory
-                        movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
-                    }
-                },
-                //3
-                filePanel.getFileTable()
+                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
+                        if (selectedRow != -1)
+                        {
+                            String newDirPath = filePanel.getFileTable().getSelectedPathName(); //get name of directory
+                            movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
+                        }
+                    },
+                    //3
+                    filePanel.getFileTable()
             );
             displayPanel(movePanelHolder[0]);
 
@@ -198,35 +194,40 @@ public class MainFrame extends JFrame implements ActionListener
             final CompareFilePanel[] comparePanelHolder = new CompareFilePanel[1];
             //CompareFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a file, 3. table reference
             comparePanelHolder[0] = new CompareFilePanel(
-                //1
-                event -> clearLowerPanel(),
-                //2
-                () ->
-                {
-                    int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
-                    if (selectedRow != -1)
+                    //1
+                    event -> clearLowerPanel(),
+                    //2
+                    () ->
                     {
-                        String selectedFile = filePanel.getFileTable().getSelectedPathName(); //get name of file
-                        if (!comparePanelHolder[0].fileOneTag.isVisible()) //if first tag isn't visible meaning first file has not been selected
+                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
+                        if (selectedRow != -1)
                         {
-                            comparePanelHolder[0].setFirstTag(selectedFile); //set first file
-                        } else //if first tag is visible meaning first file has been selected
-                        {
-                            comparePanelHolder[0].setSecondTag(selectedFile); //set second file
+                            String selectedFile = filePanel.getFileTable().getSelectedPathName(); //get name of file
+                            if (!comparePanelHolder[0].fileOneTag.isVisible()) //if first tag isn't visible meaning first file has not been selected
+                            {
+                                comparePanelHolder[0].setFirstTag(selectedFile); //set first file
+                            } else //if first tag is visible meaning first file has been selected
+                            {
+                                comparePanelHolder[0].setSecondTag(selectedFile); //set second file
+                            }
                         }
-                    }
-                },
-                filePanel.getFileTable()
-        );
-        displayPanel(comparePanelHolder[0]);
-    }
-        //TO DO: implement the validate button
+                    },
+                    filePanel.getFileTable()
+            );
+            displayPanel(comparePanelHolder[0]);
+        }
+        else if (e.getSource() == validateButton)
+        {
+            //TO DO: implement validate function and update the message
+            JOptionPane.showMessageDialog(this, "");
+
+        }
     }
 
     //Displays panels after clicking a specific button and repainting lowerPanel
     //Arguments:
     //      -panel: panel to be displayed
-   public void displayPanel(JPanel panel)
+    public void displayPanel(JPanel panel)
     {
         lowerPanel.removeAll();
         lowerPanel.add(panel);
@@ -242,7 +243,6 @@ public class MainFrame extends JFrame implements ActionListener
         lowerPanel.repaint();
     }
 }
-
 
 
 

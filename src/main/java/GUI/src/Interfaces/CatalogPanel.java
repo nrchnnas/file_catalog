@@ -90,7 +90,7 @@ public class CatalogPanel extends JPanel
 
         //---------------------Table Panel-----------------------
 
-        catalogTable = new CatalogTable(mainFrame);
+        catalogTable = new CatalogTable(mainFrame, this);
         JScrollPane tableScrollPane = catalogTable.getScrollPane();
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         tableScrollPane.setBackground(Color.WHITE);

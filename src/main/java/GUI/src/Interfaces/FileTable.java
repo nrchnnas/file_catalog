@@ -35,10 +35,10 @@ public class FileTable
 
     public FileTable(JComponent parentComponent)
     {
-        //TO DO: convert from dummy data to real data
+        //TO DO: get only source files
         //TO DO: be able to convert strings to integer and date format
         //TO DO: if directory, ext. and size must be empty
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/Users/User");
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data = new Object[fileRecords.size()][4];
         for (int i = 0; i < fileRecords.size(); i++){
@@ -55,14 +55,14 @@ public class FileTable
         table.setRowHeight(20);
         table.setDefaultEditor(Object.class, null); //make it not editable
         table.setFillsViewportHeight(true); // Ensures the table occupies full height in the viewport
-        table.setBackground(Color.decode("#CFCFCF"));
+        table.setBackground(Color.WHITE);
         table.setFocusable(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
         setColumnWidths();
         //TO DO: if its directory, add file icon
         addIcon();
-        changeFocusColor();
 
         //-----------------Row Selection------------------
 
@@ -99,6 +99,7 @@ public class FileTable
         JTableHeader tableHeader = table.getTableHeader();
         tableHeader.setBackground(Color.decode("#3E3E3E"));
         tableHeader.setForeground(Color.white);
+        tableHeader.setReorderingAllowed(false);
 
         //------------------Scroll Pane-------------------
 
@@ -163,34 +164,6 @@ public class FileTable
         dateColumn.setPreferredWidth(50);
     }
 
-    //
-    // Customize the focus color so that when field is selected, it is highlighted in a different color
-    // Returns:
-    //      cell: the cell which is being selected/focused
-    //
-    private void changeFocusColor()
-    {
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
-        {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-            {
-                Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                if (isSelected)
-                {
-                    cell.setBackground(Color.LIGHT_GRAY);
-                    cell.setForeground(Color.BLACK);
-                } else
-                {
-                    cell.setBackground(Color.WHITE);
-                    cell.setForeground(Color.BLACK);
-                }
-                setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-                return cell;
-            }
-        });
-    }
 
     //
     // Add an icon to the front to tell if it is a file or a directory. It also renders the
@@ -216,16 +189,6 @@ public class FileTable
 
                 Image scaledImage = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
                 nameCell.setIcon(new ImageIcon(scaledImage));
-
-                if (isSelected)
-                {
-                    nameCell.setBackground(Color.LIGHT_GRAY);
-                    nameCell.setForeground(Color.BLACK);
-                } else
-                {
-                    nameCell.setBackground(Color.WHITE);
-                    nameCell.setForeground(Color.BLACK);
-                }
 
                 nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
