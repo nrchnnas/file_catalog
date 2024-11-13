@@ -1,4 +1,4 @@
-// FileTable.java
+// CatalogTable.java
 //
 // This will create the table to display all the files within the catalog
 //
