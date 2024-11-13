@@ -66,22 +66,21 @@ public class FileTable
 
         //-----------------Row Selection------------------
 
-        // Adds a selection listener so that we can get values of each row selection
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        // Clear selection when clicking on empty space in the table
+        table.addMouseListener(new MouseAdapter()
         {
             @Override
-            public void valueChanged(ListSelectionEvent e)
+            public void mousePressed(MouseEvent e)
             {
-                if (!e.getValueIsAdjusting())
+
+                if (table.rowAtPoint(e.getPoint()) == -1)
                 {
-                    //TO DO: handle row selection logic
+                    table.clearSelection();
                 }
             }
         });
 
         // Clear table selection if click is outside the table
-        // Arguments:
-        //      -e: mouse event
         parentComponent.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -91,6 +90,7 @@ public class FileTable
                 {
                     table.clearSelection();
                 }
+
             }
         });
 

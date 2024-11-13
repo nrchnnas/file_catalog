@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -89,23 +91,21 @@ public class CatalogTable
 
         //-----------------Row Selection------------------
 
-        // Adds a selection listener so that we can get values of each row selection
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        // Clear selection when clicking on empty space in the table
+        table.addMouseListener(new MouseAdapter()
         {
             @Override
-            public void valueChanged(ListSelectionEvent e)
+            public void mousePressed(MouseEvent e)
             {
-                if (!e.getValueIsAdjusting())
+
+                if (table.rowAtPoint(e.getPoint()) == -1)
                 {
-                    //TO DO: handle row selection logic
+                    table.clearSelection();
                 }
             }
         });
 
-
         // Clear table selection if click is outside the table
-        // Arguments:
-        //      -e: mouse event
         parentComponent.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -115,6 +115,7 @@ public class CatalogTable
                 {
                     table.clearSelection();
                 }
+
             }
         });
     }
@@ -127,6 +128,16 @@ public class CatalogTable
     public JScrollPane getScrollPane()
     {
         return scrollPane;
+    }
+
+    //
+    // check if row is selected or not
+    // Returns:
+    //      true if row is selected and false if it isn't
+    //
+    public boolean isRowSelected()
+    {
+        return table.getSelectedRow() != -1;
     }
 
     //
@@ -188,6 +199,28 @@ public class CatalogTable
         return fileInfos.get(rowIndex);
     }
 
+    // Gets the catalog table that has been instantiated in this class
+    // Return:
+    //      -table - the table
+    public JTable getTable()
+    {
+        return table;
+    }
+
+    //
+    // get file name or directory name from selected row
+    // Returns:
+    //      name value, otherwise null if row is not selected
+    //
+    public String getSelectedPathName()
+    {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1)
+        {
+            return table.getValueAt(selectedRow, 0).toString();
+        }
+        return null;
+    }
 }
 
 
