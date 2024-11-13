@@ -12,6 +12,13 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.ArrayList;
+import GUI.src.Interfaces.MainFrame;
+import utilities.*;
+import java.sql.Connection;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.nio.file.attribute.FileTime;
 
 public class CatalogTable
 {
