@@ -28,7 +28,8 @@ public class FileCatalog {
                 "file_path TEXT NOT NULL, " +
                 "annotation TEXT, " +
                 "modification_date TEXT, " +
-                "file_type TEXT)";
+                "file_type TEXT, " +
+                "file_size INTEGER)"; // Added file_size column
         try (Connection conn = DatabaseUtils.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(createTable);
@@ -39,13 +40,13 @@ public class FileCatalog {
     }
 
     // Adds a new file to the catalog with validation
-    public static void addFile(String fileName, String filePath, String annotation, String modificationDate, String fileType) {
+    public static void addFile(String fileName, String filePath, String annotation, String modificationDate, String fileType, long fileSize) {
         if (fileName == null || filePath == null || fileType == null) {
             logger.warning("Invalid input: fileName, filePath, and fileType cannot be null.");
             return;
         }
 
-        String sql = "INSERT INTO file_catalog(file_name, file_path, annotation, modification_date, file_type) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO file_catalog(file_name, file_path, annotation, modification_date, file_type, file_size) VALUES(?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, fileName);
@@ -53,6 +54,7 @@ public class FileCatalog {
             pstmt.setString(3, annotation);
             pstmt.setString(4, modificationDate);
             pstmt.setString(5, fileType);
+            pstmt.setLong(6, fileSize); // Set the fileSize value
             pstmt.executeUpdate();
             logger.info("File added to catalog: " + fileName);
         } catch (SQLException e) {
@@ -189,7 +191,7 @@ public class FileCatalog {
                         rs.getString("annotation"),
                         rs.getString("modification_date"),
                         rs.getString("file_type"),
-                        rs.getLong("file_size") // Retrieve file size
+                        rs.getLong("file_size") // Retrieve file_size from ResultSet
                 );
                 files.add(file);
             }
@@ -199,7 +201,6 @@ public class FileCatalog {
         }
         return files;
     }
-
 
     // Deletes a file from the catalog by ID with confirmation logging
     public static void deleteFile(int fileId) {
@@ -218,4 +219,3 @@ public class FileCatalog {
         }
     }
 }
-
