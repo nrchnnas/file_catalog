@@ -7,10 +7,14 @@
 
 package GUI.src.Interfaces;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import GUI.src.Interfaces.MainFrame;
 import utilities.*;
@@ -28,7 +32,7 @@ public class CatalogTable
     private ArrayList<FileInfo> fileInfos = new ArrayList<>();
 
     //Arguments: passing the mainFrame
-    public CatalogTable(MainFrame mainFrame)
+    public CatalogTable(MainFrame mainFrame, JComponent parentComponent)
     {
 
         //TO DO: convert from dummy data to real data
@@ -58,11 +62,10 @@ public class CatalogTable
         table.setFillsViewportHeight(true); // Ensures the table occupies full height in the viewport
         table.setBackground(Color.white);
         table.setFocusable(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setColumnWidths();
-        //TO DO: if its directory, add file icon
         addIcon();
-        changeFocusColor();
 
         //----------------View More Button-----------------
 
@@ -75,6 +78,7 @@ public class CatalogTable
         JTableHeader tableHeader = table.getTableHeader();
         tableHeader.setBackground(Color.decode("#3E3E3E"));
         tableHeader.setForeground(Color.white);
+        tableHeader.setReorderingAllowed(false);
 
         //------------------Scroll Pane-------------------
 
@@ -82,6 +86,37 @@ public class CatalogTable
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        //-----------------Row Selection------------------
+
+        // Adds a selection listener so that we can get values of each row selection
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                if (!e.getValueIsAdjusting())
+                {
+                    //TO DO: handle row selection logic
+                }
+            }
+        });
+
+
+        // Clear table selection if click is outside the table
+        // Arguments:
+        //      -e: mouse event
+        parentComponent.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (e.getSource() != table)
+                {
+                    table.clearSelection();
+                }
+            }
+        });
     }
 
     //
@@ -116,35 +151,6 @@ public class CatalogTable
     }
 
     //
-    // Customize the focus color so that when field is selected, it is highlighted in a different color
-    // Returns:
-    //      cell: the cell which is being selected/focused
-    //
-    private void changeFocusColor()
-    {
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
-        {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-            {
-                Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                if (isSelected)
-                {
-                    cell.setBackground(Color.LIGHT_GRAY);
-                    cell.setForeground(Color.BLACK);
-                } else
-                {
-                    cell.setBackground(Color.WHITE);
-                    cell.setForeground(Color.BLACK);
-                }
-                setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-                return cell;
-            }
-        });
-    }
-
-    //
     // Add an icon to the front to tell if it is a file or a directory. It also renders the
     // focus selection similar to changeFocusColor()
     // Returns:
@@ -153,7 +159,6 @@ public class CatalogTable
     private void addIcon()
     {
         ImageIcon documentIcon = new ImageIcon("src/main/java/assets/Document.png");
-        ImageIcon folderIcon = new ImageIcon("src/main/java/assets/Folder.png");
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {
@@ -161,23 +166,8 @@ public class CatalogTable
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
             {
                 JLabel nameCell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Set icon based on if it's a file or directory
-                String ext = table.getValueAt(row, 1).toString();
-                ImageIcon icon = ext.equals("dir") ? folderIcon : documentIcon;
-
-                Image scaledImage = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+                Image scaledImage = documentIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
                 nameCell.setIcon(new ImageIcon(scaledImage));
-
-                if (isSelected)
-                {
-                    nameCell.setBackground(Color.LIGHT_GRAY);
-                    nameCell.setForeground(Color.BLACK);
-                } else
-                {
-                    nameCell.setBackground(Color.WHITE);
-                    nameCell.setForeground(Color.BLACK);
-                }
                 nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
                 return nameCell;

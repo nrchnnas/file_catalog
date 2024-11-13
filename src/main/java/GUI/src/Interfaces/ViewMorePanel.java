@@ -50,6 +50,7 @@ public class ViewMorePanel extends JPanel
         };
 
         infoTable.setPreferredScrollableViewportSize(new Dimension(300, 100));
+        infoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane tableScrollPane = new JScrollPane(infoTable);
         add(tableScrollPane, BorderLayout.WEST);
 
@@ -58,6 +59,7 @@ public class ViewMorePanel extends JPanel
         JTableHeader tableHeader = infoTable.getTableHeader();
         tableHeader.setBackground(Color.decode("#3E3E3E"));
         tableHeader.setForeground(Color.white);
+        tableHeader.setReorderingAllowed(false);
 
         //------------------Annotation---------------------
 
