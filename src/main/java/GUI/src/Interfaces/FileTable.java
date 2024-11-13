@@ -38,7 +38,7 @@ public class FileTable
         //TO DO: get only source files
         //TO DO: be able to convert strings to integer and date format
         //TO DO: if directory, ext. and size must be empty
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data = new Object[fileRecords.size()][4];
         for (int i = 0; i < fileRecords.size(); i++){
