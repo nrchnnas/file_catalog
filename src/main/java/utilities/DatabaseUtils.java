@@ -1,32 +1,3 @@
-//package utilities;
-//
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//
-//public class DatabaseUtils {
-//    private static final Logger logger = Logger.getLogger(DatabaseUtils.class.getName());
-//
-//    // Retrieve database URL from environment variable, with default fallback
-//    private static final String URL = System.getenv("DATABASE_URL") != null ?
-//            System.getenv("DATABASE_URL") : "jdbc:sqlite:data/catalog.db";
-// // Private constructor to prevent instantiation
-//    private DatabaseUtils() {
-//        throw new UnsupportedOperationException("DatabaseUtils is a utility class and cannot be instantiated.");
-//    }
-//
-//    public static Connection getConnection() throws SQLException {
-//        try {
-//            return DriverManager.getConnection(URL);
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Failed to connect to the database", e);
-//            throw new SQLException("Database connection failed. Please check the URL and your environment setup.", e); // add context to exception
-//        }
-//    }
-//}
-
 package utilities;
 
 import java.sql.Connection;
@@ -38,11 +9,10 @@ import java.util.logging.Logger;
 public class DatabaseUtils {
     private static final Logger logger = Logger.getLogger(DatabaseUtils.class.getName());
 
-    // Retrieve database URL from environment variable, with default fallback to absolute path for testing
+    // Retrieve database URL from environment variable, with default fallback
     private static final String URL = System.getenv("DATABASE_URL") != null ?
-            System.getenv("DATABASE_URL") : "jdbc:sqlite:C:/Users/thave/OneDrive/Documents/GitHub/file_catalog/data/catalog.db";
-
-    // Private constructor to prevent instantiation
+            System.getenv("DATABASE_URL") : "jdbc:sqlite:data/catalog.db";
+ // Private constructor to prevent instantiation
     private DatabaseUtils() {
         throw new UnsupportedOperationException("DatabaseUtils is a utility class and cannot be instantiated.");
     }
@@ -51,8 +21,38 @@ public class DatabaseUtils {
         try {
             return DriverManager.getConnection(URL);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to connect to the database at URL: " + URL, e);
-            throw new SQLException("Failed to connect to the database at URL: " + URL + ". Please check the environment setup.", e);
+            logger.log(Level.SEVERE, "Failed to connect to the database", e);
+            throw new SQLException("Database connection failed. Please check the URL and your environment setup.", e); // add context to exception
         }
     }
 }
+
+//package utilities;
+//
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.SQLException;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+//
+//public class DatabaseUtils {
+//    private static final Logger logger = Logger.getLogger(DatabaseUtils.class.getName());
+//
+//    // Retrieve database URL from environment variable, with default fallback to absolute path for testing
+//    private static final String URL = System.getenv("DATABASE_URL") != null ?
+//            System.getenv("DATABASE_URL") : "jdbc:sqlite:C:/Users/thave/OneDrive/Documents/GitHub/file_catalog/data/catalog.db";
+//
+//    // Private constructor to prevent instantiation
+//    private DatabaseUtils() {
+//        throw new UnsupportedOperationException("DatabaseUtils is a utility class and cannot be instantiated.");
+//    }
+//
+//    public static Connection getConnection() throws SQLException {
+//        try {
+//            return DriverManager.getConnection(URL);
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Failed to connect to the database at URL: " + URL, e);
+//            throw new SQLException("Failed to connect to the database at URL: " + URL + ". Please check the environment setup.", e);
+//        }
+//    }
+//}

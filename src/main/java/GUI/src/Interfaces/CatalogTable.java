@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
+import utilities.FileRecord;
+import utilities.FileCatalog;
 
 public class CatalogTable
 {
@@ -42,7 +45,12 @@ public class CatalogTable
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
         fileInfos.add(new FileInfo("Program1", "C", "166B", "21.08.2019 17:00", "/path/to/Program1", "Program to compare two source files."));
         fileInfos.add(new FileInfo("Program2", "Java", "239GB", "22.08.2019 18:00", "/path/to/Program2", "Program that annotates a source file."));
-
+        List<FileRecord> catalogRecords = new ArrayList<>();
+        System.out.println(catalogRecords.size());
+        for(int i = 0; i < catalogRecords.size(); i++){
+            FileRecord currentRecord = catalogRecords.get(i);
+            fileInfos.add(new FileInfo(currentRecord.getFileName(), currentRecord.getFileType(), Long.toString(currentRecord.getFileSize()),currentRecord.getModificationDate(), currentRecord.getFilePath(), currentRecord.getAnnotation()));
+        }
         //---------------------Table----------------------
 
         Object[][] data = new Object[fileInfos.size()][5];

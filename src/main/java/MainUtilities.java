@@ -52,7 +52,7 @@ public class MainUtilities {
         String modificationDate = "2024-11-01";
         String fileType = ".txt";
 
-        FileCatalog.addFile(fileName, filePath, annotation, modificationDate, fileType);
+//        FileCatalog.addFile(fileName, filePath, annotation, modificationDate, fileType);
         logger.info("Sample file added to catalog.");
     }
 
