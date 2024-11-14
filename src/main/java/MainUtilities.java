@@ -117,11 +117,12 @@ public class MainUtilities {
         }
     }
 
-    private static void validateFile(String filePath, long expectedSize, String expectedPath, FileTime expectedLastModified) {
+    private static boolean validateFile(String filePath, long expectedSize, String expectedPath, FileTime expectedLastModified) {
         boolean isValid = FileValidation.validateFile(filePath, expectedSize, expectedPath, expectedLastModified);
-        logger.info(isValid
-                ? "File validation successful for: " + filePath
-                : "File validation failed for: " + filePath);
+        return isValid;
+//        logger.info(isValid
+//                ? "File validation successful for: " + filePath
+//                : "File validation failed for: " + filePath);
     }
 }
 

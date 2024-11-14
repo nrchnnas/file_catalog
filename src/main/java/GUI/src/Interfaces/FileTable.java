@@ -18,10 +18,12 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.List;
 
 public class FileTable
 {
+    private File currentDirectory = new File(System.getProperty("user.home"));
     private JTable table; //reference to the table that contains the files from the disk
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
 
@@ -37,7 +39,7 @@ public class FileTable
     {
         //TO DO: get only source files
         //TO DO: if directory, ext. and size must be empty
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents(currentDirectory.getAbsolutePath());
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data = new Object[fileRecords.size()][4];
         for (int i = 0; i < fileRecords.size(); i++){
@@ -216,7 +218,7 @@ public class FileTable
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1)
         {
-            List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
+            List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents(currentDirectory.getAbsolutePath());
             return fileRecords.get(selectedRow).getPath();
         }
         return null;

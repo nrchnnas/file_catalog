@@ -251,7 +251,7 @@ public class MainFrame extends JFrame implements ActionListener
 
         else if (e.getSource() == validateButton)
         {
-            //TO DO: implement validate function and update the message
+
             JOptionPane.showMessageDialog(this, "");
 
         }
