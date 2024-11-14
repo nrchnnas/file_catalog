@@ -6,16 +6,12 @@
 //
 
 package GUI.src.Interfaces;
-import utilities.FileCatalog;
-import utilities.FileRecord;
-
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.DefaultCellEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class ViewMoreButton
 {
@@ -109,9 +105,8 @@ public class ViewMoreButton
             {
                 try
                 {
-                    List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
-                    FileRecord record = catalogRecords.get(selectedRow);
-                    mainFrame.displayPanel(new ViewMorePanel(record));
+                    FileInfo fileInfo = catalogTable.getFileAt(selectedRow);
+                    mainFrame.displayPanel(new ViewMorePanel(fileInfo));
                 } catch (Exception ex)
                 {
                     JOptionPane.showMessageDialog(mainFrame, "Error loading file details: " + ex.getMessage());

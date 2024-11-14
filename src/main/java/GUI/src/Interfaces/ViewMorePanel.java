@@ -8,8 +8,6 @@
 //
 
 package GUI.src.Interfaces;
-import utilities.FileRecord;
-
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
@@ -22,21 +20,21 @@ public class ViewMorePanel extends JPanel
     private JButton deleteButton, viewButton, editButton, doneButton;
     private JTable infoTable; //table to display all the information
     private JTextArea annotationArea; //where annotations will be shown
-    private FileRecord fileInfo; //info about file as a struct
+    private FileInfo fileInfo; //info about file as a struct
 
-    public ViewMorePanel(FileRecord fileInfo)
+    public ViewMorePanel(FileInfo fileInfo)
     {
         this.fileInfo = fileInfo;
         setLayout(new BorderLayout());
 
         //---------------------Table----------------------
-        Object[][] tableData =
+        String[][] tableData =
         {
-            {"Name", fileInfo.getFileName()},
-            {"Extension", fileInfo.getFileType()},
-            {"Size", formatSize(fileInfo.getFileSize())},
-            {"Last Edited", fileInfo.getModificationDate()},
-            {"Location", fileInfo.getFilePath()}
+            {"Name", fileInfo.getName()},
+            {"Extension", fileInfo.getExtension()},
+            {"Size", fileInfo.getSize()},
+            {"Last Edited", fileInfo.getLastEditedDate()},
+            {"Location", fileInfo.getLocation()}
         };
 
         String[] tableColumns = {"Attribute", "Value"};
@@ -116,7 +114,7 @@ public class ViewMorePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getFileName());
+            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getName());
             contentDisplay.setVisible(true);
         }
     }
@@ -143,14 +141,5 @@ public class ViewMorePanel extends JPanel
             annotationArea.setEditable(false);
             annotationArea.setBackground(Color.LIGHT_GRAY);
         }
-    }
-
-    //format the size
-    private String formatSize(long size)
-    {
-        if (size < 1024) return size + " B";
-        int exp = (int) (Math.log(size) / Math.log(1024));
-        char unit = "KMGTPE".charAt(exp - 1); // K, M, G, T, etc.
-        return String.format("%.1f %sB", size / Math.pow(1024, exp), unit);
     }
 }
