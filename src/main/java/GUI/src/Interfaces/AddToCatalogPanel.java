@@ -125,7 +125,7 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
                 refreshCatalog.run();
             } else
             {
-                System.out.println("Cannot add a directory to the catalog.");
+                JOptionPane.showMessageDialog(AddToCatalogPanel.this, "Cannot add a directory to the catalog");
             }
         }
     }
@@ -136,6 +136,13 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
+
+    public void updateFilePath(String newPathName)
+    {
+        this.pathName = newPathName;
+        System.out.println("Updated selected file path: " + pathName);
+    }
+
 
 }
 

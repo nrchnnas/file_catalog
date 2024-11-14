@@ -1,4 +1,4 @@
-// ViewMoreDisplay.java
+// ViewMorePanel.java
 //
 // Panel for displaying more details of files in catalog table after the view more
 // button is clicked. It has functions for deleting file from catalog, editing annotation
@@ -25,11 +25,13 @@ public class ViewMorePanel extends JPanel
     private JTextArea annotationArea; //where annotations will be shown
     private FileRecord fileInfo; //info about file as a struct
     private Runnable refreshCatalog; //refresh runnable
+    private Runnable clearLowerPanel;
 
-    public ViewMorePanel(FileRecord fileInfo, Runnable refreshCatalog)
+    public ViewMorePanel(FileRecord fileInfo, Runnable refreshCatalog, Runnable clearLowerPanel)
     {
         this.fileInfo = fileInfo;
         this.refreshCatalog = refreshCatalog;
+        this.clearLowerPanel = clearLowerPanel;
         setLayout(new BorderLayout());
 
         //---------------------Table----------------------
@@ -115,7 +117,7 @@ public class ViewMorePanel extends JPanel
             {
                 FileCatalog.deleteFile(fileInfo.getId()); // Assume deleteFile uses file ID
                 refreshCatalog.run(); // Refresh the catalog table to reflect deletion
-                JOptionPane.showMessageDialog(ViewMorePanel.this, "File deleted successfully.");
+                clearLowerPanel.run();
             }
         }
     }
@@ -126,7 +128,7 @@ public class ViewMorePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getFileName());
+            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getFilePath());
             contentDisplay.setVisible(true);
         }
     }
@@ -148,10 +150,11 @@ public class ViewMorePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            //TO DO: logic to save annotation
             String updatedAnnotation = annotationArea.getText();
             annotationArea.setEditable(false);
             annotationArea.setBackground(Color.LIGHT_GRAY);
+            FileCatalog.updateAnnotation(fileInfo.getId(), updatedAnnotation);
+            refreshCatalog.run();
         }
     }
 }

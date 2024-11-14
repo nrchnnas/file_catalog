@@ -109,7 +109,11 @@ public class ViewMoreButton
                 try
                 {
                     FileRecord fileInfo = catalogTable.getFileAt(selectedRow);
-                    mainFrame.displayPanel(new ViewMorePanel(fileInfo,() -> catalogTable.refreshTable()));
+                    mainFrame.displayPanel(new ViewMorePanel(
+                            fileInfo,
+                            catalogTable::refreshTable,
+                            mainFrame::clearLowerPanel // Clear lower panel after deletion
+                    ));
                 } catch (Exception ex)
                 {
                     JOptionPane.showMessageDialog(mainFrame, "Error loading file details: " + ex.getMessage());

@@ -26,9 +26,11 @@ public class MainFrame extends JFrame implements ActionListener
     JPanel lowerPanel; //the lower panel of the frame
     FilePanel filePanel; //reference to the panel containing the file table
     CatalogPanel catalogPanel; //reference to the panel containing catalog table
+    private JPanel currentOpenPanel;
 
     public MainFrame()
     {
+
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
@@ -90,10 +92,10 @@ public class MainFrame extends JFrame implements ActionListener
         GridBagConstraints gbc = new GridBagConstraints();
 
         filePanel = new FilePanel();
-        //sets the listener which enables the buttons if row is selected from file table
-        filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e -> updateButtonStates());
-
         catalogPanel = new CatalogPanel(this);
+        setupFileTableListener();
+
+        filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e -> updateButtonStates());
         catalogPanel.getCatalogTable().getTable().getSelectionModel().addListSelectionListener(e -> updateButtonStates());
 
         //setting the layout of the two tables using Grid Bag Layout
@@ -171,7 +173,10 @@ public class MainFrame extends JFrame implements ActionListener
         } else if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
             String pathName = filePanel.getFileTable().getSelectedFilePath(); // Get selected file path
-            displayPanel(new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable()));
+            AddToCatalogPanel addPanel = new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable());
+            displayPanel(addPanel);
+            currentOpenPanel = addPanel;
+
         // Adds the move file panel to lowerPanel if row is selected
         } else if (e.getSource() == moveFileButton && filePanel.getFileTable().isRowSelected())
         {
@@ -266,14 +271,16 @@ public class MainFrame extends JFrame implements ActionListener
         lowerPanel.add(panel);
         lowerPanel.revalidate();
         lowerPanel.repaint();
+        currentOpenPanel = panel;
     }
 
     //Clears components within lower panel
-    private void clearLowerPanel()
+    public void clearLowerPanel()
     {
         lowerPanel.removeAll();
         lowerPanel.revalidate();
         lowerPanel.repaint();
+        currentOpenPanel = null;
     }
 
     //Update button states based on row selection of each tables
@@ -298,6 +305,20 @@ public class MainFrame extends JFrame implements ActionListener
         }
     }
 
+
+    // Add a ListSelectionListener to the FilePanel’s file table
+    private void setupFileTableListener()
+    {
+        filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
+        {
+            // Check if the currently open panel is an instance of AddToCatalogPanel
+            if (currentOpenPanel instanceof AddToCatalogPanel && filePanel.getFileTable().isRowSelected())
+            {
+                String newPathName = filePanel.getFileTable().getSelectedFilePath(); // Get new selected file path
+                ((AddToCatalogPanel) currentOpenPanel).updateFilePath(newPathName); // Update AddToCatalogPanel path
+            }
+        });
+    }
 }
 
 

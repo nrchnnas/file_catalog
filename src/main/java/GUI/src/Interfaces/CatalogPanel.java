@@ -123,4 +123,5 @@ public class CatalogPanel extends JPanel
     {
         return catalogTable;
     }
+
 }
