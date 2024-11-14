@@ -6,18 +6,29 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.DirectoryContent;
+import utilities.DiskReader;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class FilePanel extends JPanel implements ActionListener
 {
-    JButton undoButton; //undo directory button
-    JButton redoButton; //redo directory button
+    JButton backButton; //undo directory button
+    JButton forwardButton; //redo directory button
     MyTextField searchField; //text field for searching files in disk
     MyTextField suffixField; //text field for searching files in disk by searching an extension/suffix
     private final transient FileTable fileTable; //the table containing files in disk
+    private int historyIndex = -1; // to track current position in history
+    private List<String> directoryHistory = new ArrayList<>(); // to store history of visited directories
+    private JLabel currDirLabel; // Label to display current directory
+
 
     FilePanel()
     {
@@ -29,26 +40,25 @@ public class FilePanel extends JPanel implements ActionListener
 
         //----------------Current Directory Panel-------------------
 
-        //TO DO: make button dynamic so that it changes from dark to light depending on actions
-        undoButton = new JButton();
-        undoButton.setFocusable(false);
-        undoButton.setIcon(UNDO_ICON);
-        undoButton.addActionListener(this);
-        undoButton.setEnabled(false);
+        backButton = new JButton();
+        backButton.setFocusable(false);
+        backButton.setIcon(UNDO_ICON);
+        backButton.addActionListener(this);
+        backButton.setEnabled(false);
 
-        redoButton = new JButton();
-        redoButton.setFocusable(false);
-        redoButton.setIcon(REDO_ICON);
-        redoButton.addActionListener(this);
-        redoButton.setEnabled(false);
+        forwardButton = new JButton();
+        forwardButton.setFocusable(false);
+        forwardButton.setIcon(REDO_ICON);
+        forwardButton.addActionListener(this);
+        forwardButton.setEnabled(false);
 
-        //TO DO: make currDirLabel dynamic
-        JLabel currDirLabel = new JLabel("Disk"); //label for the current directory we are in
+        String initialDirectory = "/Users/lala";
+        currDirLabel = new JLabel(initialDirectory);
 
         JPanel currDirPanel = new JPanel();
         currDirPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-        currDirPanel.add(undoButton);
-        currDirPanel.add(redoButton);
+        currDirPanel.add(backButton);
+        currDirPanel.add(forwardButton);
         currDirPanel.add(currDirLabel);
 
         //----------------------Search Panel-----------------------
@@ -103,25 +113,104 @@ public class FilePanel extends JPanel implements ActionListener
         this.setLayout(new BorderLayout());
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
+
+        addToHistory(initialDirectory);
+        loadDirectory(initialDirectory);
+        fileTable.getTable().getSelectionModel().addListSelectionListener(new DirectorySelectionListener());
     }
 
     @Override
     public void actionPerformed(ActionEvent e)
     {
-
-        //TO DO: implement undo and redo functionality
-
-        //TO DO: implement search functionality
-
-        //TO DO: implement searching by suffix functionality
+        if (e.getSource() == backButton && historyIndex > 0)
+        {
+            historyIndex--;
+            String prevDir = directoryHistory.get(historyIndex);
+            loadDirectory(prevDir);
+        } else if (e.getSource() == forwardButton)
+        {
+            // Forward button is now used to enter the selected directory
+            String selectedDirectory = fileTable.getSelectedDirectoryPath();
+            if (selectedDirectory != null)
+            {
+                addToHistory(selectedDirectory);
+                loadDirectory(selectedDirectory);
+            }
+        }
     }
 
+    // Updates back and forward button icons and states
+    private void updateButtonIcon()
+    {
+        backButton.setEnabled(historyIndex > 0);
+    }
+
+    // Updates back and forward button states
+    private void updateButtonStates()
+    {
+        backButton.setEnabled(historyIndex > 0);
+    }
+
+    // Adds a directory to the navigation history
+    private void addToHistory(String directory)
+    {
+        // Remove any forward history if new navigation is made
+        if (historyIndex < directoryHistory.size() - 1)
+        {
+            directoryHistory.subList(historyIndex + 1, directoryHistory.size()).clear();
+        }
+        directoryHistory.add(directory);
+        historyIndex++;
+        updateButtonIcon();
+        System.out.println("Navigating to: " + directory);
+        System.out.println("Directory History: " + directoryHistory);
+        System.out.println("History Index: " + historyIndex);
+        System.out.println("Directory size: " + directoryHistory.size());
+    }
+
+    // Loads the selected directory and updates the table
+    private void loadDirectory(String directory)
+    {
+        // Reload directory contents in FileTable
+        List<DirectoryContent> newRecords = DiskReader.listDirectoryContents(directory);
+        fileTable.updateTable(newRecords);
+        updateButtonStates();
+        // Update current directory label
+        updateCurrentDirectoryLabel(directory);
+    }
+
+    // Updates the current directory label
+    private void updateCurrentDirectoryLabel(String directory)
+    {
+        currDirLabel.setText(directory);
+    }
+
+
     // Gets the file table that has been instantiated in this class
-    // Return:
-    //      -filetable - the table
     public FileTable getFileTable()
     {
         return fileTable;
     }
 
+    // Inner class to listen for directory selection changes
+    private class DirectorySelectionListener implements ListSelectionListener
+    {
+        @Override
+        public void valueChanged(ListSelectionEvent e)
+        {
+            // Ignore extra messages
+            if (e.getValueIsAdjusting()) return;
+
+            boolean isDirectorySelected = fileTable.isSelectedDirectory();
+            forwardButton.setEnabled(isDirectorySelected);
+        }
+    }
+
+    // Method to navigate to a new directory (called from FileTable on double-click, now removed)
+    // Retained for potential future use
+    public void navigateToDirectory(String directory)
+    {
+        addToHistory(directory);
+        loadDirectory(directory);
+    }
 }
