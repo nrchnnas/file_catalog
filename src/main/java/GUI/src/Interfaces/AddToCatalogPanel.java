@@ -7,18 +7,29 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.DirectoryContent;
+import utilities.DiskReader;
+import utilities.FileCatalog;
+import utilities.MainUtilities;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
+import java.io.File;
+import java.util.List;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class AddToCatalogPanel extends JPanel
+
+public class AddToCatalogPanel extends JPanel implements ActionListener
 {
+    private FileTable fileTable = new FileTable(this); //the table containing files in catalog
     JButton cancelButton; //button to cancel
     JButton addButton; //button to add to catalog
     JTextArea addAnnotationField; //text field for annotation
     private static final String PLACEHOLDER_TEXT = "Add an annotation: "; //placeholder text inside the text field
+    String annotationInput;
+    File selectedFile;
 
     public AddToCatalogPanel(ActionListener closeListener)
     {
@@ -78,4 +89,32 @@ public class AddToCatalogPanel extends JPanel
         cancelButton.addActionListener(closeListener);
         add(cancelButton);
     }
+    public DirectoryContent getDiskSelected(JTable table) {
+        int selectedRow = table.getSelectedRow();
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
+        DirectoryContent selectedFile = fileRecords.get(selectedRow);
+        if (selectedRow != -1) {
+            return selectedFile;
+        } else {
+            return null;
+        }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource() == addButton && getDiskSelected(fileTable.getTable()) != null){
+            selectedFile = new File(getDiskSelected(fileTable.getTable()).getPath());
+            if(!selectedFile.isDirectory()){
+                System.out.println("call triggered");
+                DirectoryContent selectedRecord = getDiskSelected(fileTable.getTable());
+                annotationInput = addAnnotationField.getText();
+                MainUtilities.addFileToCatalog( selectedFile,annotationInput,selectedRecord.getLastModified(),selectedRecord.getExtension() );
+            }
+            else{
+                System.out.println("entry failed");
+            }
+        }
+    }
+
 }
+
+

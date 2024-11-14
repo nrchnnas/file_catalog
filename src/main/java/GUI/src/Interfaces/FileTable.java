@@ -206,4 +206,15 @@ public class FileTable
     {
         return table;
     }
+
+    public DirectoryContent getDiskSelected(JTable table) {
+        int selectedRow = table.getSelectedRow();
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
+        DirectoryContent selectedFile = fileRecords.get(selectedRow);
+        if (selectedRow != -1) {
+            return selectedFile;
+        } else {
+            return null;
+        }
+    }
 }
