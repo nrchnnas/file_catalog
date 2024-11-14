@@ -1,7 +1,7 @@
 // CompareFilePanel.java
 //
 // The panel that will be displayed after the compare source files button is clicked
-// and handles the logic for comparing two source files
+// and handles the logic for comparing two source files for each options
 //
 // Created by Lalida Krairit, 2 November 2024
 //
@@ -13,7 +13,10 @@ import java.awt.event.ActionListener;
 
 public class CompareFilePanel extends JPanel
 {
-    private final JButton cancelButton; // button to cancel
+    private final JPanel modeSelectionPanel; // Panel for mode buttons
+    private final JPanel fileSelectionPanel; // Panel for file selection buttons
+    private final JButton cancelModeButton; // button to cancel mode selection
+    private final JButton cancelFilSelButton; // button to cancel file selection
     private final JButton compareButton; // button to compare files
     private final JButton fileOneButton; // button for selecting first file to compare
     private final JButton fileTwoButton; // button for selecting second file to compare
@@ -21,16 +24,41 @@ public class CompareFilePanel extends JPanel
     private JButton delFileTwoButton; // button to delete second file selection
     public final MyTag fileOneTag; // tag to display first file information
     private final MyTag fileTwoTag; // tag to display second file information
+    private FileTable fileTable; // reference to file table
+    private CatalogTable catalogTable; // reference to catalog table
+    private final CardLayout cardLayout; // Card layout to switch panels
+    private String comparisonMode; // stores the comparison mode ("diskDisk", "catCat", "diskCat")
 
     //Arguments:
     //      -closeListener: listener to actions
     //      -userChooseFile: defines concurrent task
     //      -fileTable: reference to the file table
-    public CompareFilePanel(ActionListener closeListener, Runnable userChooseFile, FileTable fileTable)
+    //      -catalogTable: reference to catalog table
+    public CompareFilePanel(ActionListener closeListener, Runnable userChooseFile, FileTable fileTable, CatalogTable catalogTable)
     {
-        setLayout(new BorderLayout());
+        this.fileTable = fileTable;
+        this.catalogTable = catalogTable;
+        this.cardLayout = new CardLayout();
+        setLayout(cardLayout);
         setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         setOpaque(false);
+
+        //-----------------Mode Selection Panel--------------------
+        JButton compareDiskToDiskButton = new JButton("Compare Disk to Disk");
+        compareDiskToDiskButton.addActionListener(e -> showFileSelPanel("diskDisk"));
+
+        JButton compareCatToCatButton = new JButton("Compare Catalog to Catalog");
+        compareCatToCatButton.addActionListener(e -> showFileSelPanel("catCat"));
+
+        cancelModeButton = new JButton("Cancel");
+        cancelModeButton.addActionListener(closeListener);
+
+        modeSelectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        modeSelectionPanel.add(compareDiskToDiskButton);
+        modeSelectionPanel.add(compareCatToCatButton);
+        modeSelectionPanel.add(cancelModeButton);
+
+        //-----------------File Selection Panel--------------------
 
         fileOneTag = new MyTag("First file: ", "", true);
         fileOneTag.setVisible(false);
@@ -38,37 +66,73 @@ public class CompareFilePanel extends JPanel
         fileTwoTag.setVisible(false);
 
         //create selection button
-        fileOneButton = createSelButton("Choose First File", userChooseFile, fileTable, this::setFirstTag);
-        fileTwoButton = createSelButton("Choose Second File", userChooseFile, fileTable, this::setSecondTag);
+        fileOneButton = createSelButton("Choose First File", userChooseFile, this::setFirstTag);
+        fileTwoButton = createSelButton("Choose Second File", userChooseFile, this::setSecondTag);
         //create delete button, if they press it resets selection
         delFileOneButton = createDelButton(() -> resetSelection(fileOneTag, fileOneButton, delFileOneButton));
         delFileTwoButton = createDelButton(() -> resetSelection(fileTwoTag, fileTwoButton, delFileTwoButton));
 
         compareButton = new JButton("Compare source files");
         compareButton.addActionListener(e -> openComparisonPopup());
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(closeListener);
+        compareButton.setEnabled(false);
+        cancelFilSelButton = new JButton("Cancel");
+        cancelFilSelButton.addActionListener(closeListener);
 
-        //-----------------------Top Panel--------------------------
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(fileOneButton); topPanel.add(fileOneTag); topPanel.add(delFileOneButton);
         topPanel.add(fileTwoButton); topPanel.add(fileTwoTag); topPanel.add(delFileTwoButton);
 
-        //-----------------------Lower Panel--------------------------
         JPanel lowerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         lowerPanel.add(compareButton);
-        lowerPanel.add(cancelButton);
+        lowerPanel.add(cancelFilSelButton);
+
+        fileSelectionPanel = new JPanel();
+        fileSelectionPanel.add(topPanel, BorderLayout.CENTER);
+        fileSelectionPanel.add(lowerPanel, BorderLayout.SOUTH);
 
         //-----------------------Main Panel--------------------------
-        add(topPanel, BorderLayout.CENTER);
-        add(lowerPanel, BorderLayout.SOUTH);
+        add(modeSelectionPanel, "ModeSelection");
+        add(fileSelectionPanel, "FileSelection");
+        cardLayout.show(this, "ModeSelection");     // Show mode selection panel initially
 
-        fileTable.getTable().getSelectionModel().addListSelectionListener(e ->
+        fileTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelectionButtons());
+        catalogTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelectionButtons());
+    }
+
+    // Method to show the file selection panel and set the comparison mode
+    // Arguments:
+    //      -mode: mode user selects
+    public void showFileSelPanel(String mode)
+    {
+        this.comparisonMode = mode;
+        cardLayout.show(this, "FileSelection");
+        revalidate();
+        repaint();
+        updateSelectionButtons();
+    }
+
+    // Updates button states based on the current comparison mode and selection
+    private void updateSelectionButtons()
+    {
+        boolean fileTableRowSelected = fileTable.isRowSelected();
+        boolean catalogTableRowSelected = catalogTable.isRowSelected();
+
+        // Determine selection availability based on comparison mode
+        switch (comparisonMode)
         {
-            boolean rowSelected = fileTable.isRowSelected();
-            updateButtonState(fileOneButton, rowSelected && !fileOneTag.isVisible());
-            updateButtonState(fileTwoButton, rowSelected && fileOneTag.isVisible() && !fileTwoTag.isVisible());
-        });
+            case "diskDisk":
+                // Enable only if a row is selected in the fileTable
+                updateButtonState(fileOneButton, fileTableRowSelected && !fileOneTag.isVisible());
+                updateButtonState(fileTwoButton, fileTableRowSelected && fileOneTag.isVisible() && !fileTwoTag.isVisible());
+                break;
+
+            case "catCat":
+                // Enable only if a row is selected in the catalogTable
+                updateButtonState(fileOneButton, catalogTableRowSelected && !fileOneTag.isVisible());
+                updateButtonState(fileTwoButton, catalogTableRowSelected && fileOneTag.isVisible() && !fileTwoTag.isVisible());
+                break;
+        }
+        compareButton.setEnabled(fileOneTag.isVisible() && fileTwoTag.isVisible());
     }
 
     //Updates button state to be clickable and change text font accordingly
@@ -85,17 +149,23 @@ public class CompareFilePanel extends JPanel
     //Arguments:
     //      -label: label for the button
     //      -userChooseFile: runnable that runs to check whether table has chosen file from table
-    //      -fileTable: reference to the file table
     //      -setFileFunction: function that will either set the first file tag or second file tag depending on button created
     // Returns the button to be created
-    private JButton createSelButton(String label, Runnable userChooseFile, FileTable fileTable, java.util.function.Consumer<String> setTagFunction)
+    private JButton createSelButton(String label, Runnable userChooseFile, java.util.function.Consumer<String> setTagFunction)
     {
         JButton button = new JButton(label);
         updateButtonState(button, false);
         button.addActionListener(e ->
         {
             userChooseFile.run();
-            String selectedFileName = fileTable.getSelectedPathName();
+            String selectedFileName = null;
+            if ("diskDisk".equals(comparisonMode) || ("diskCat".equals(comparisonMode) && !fileOneTag.isVisible()))
+            {
+                selectedFileName = fileTable.getSelectedPathName();
+            } else if ("catCat".equals(comparisonMode) || ("diskCat".equals(comparisonMode) && fileOneTag.isVisible()))
+            {
+                selectedFileName = catalogTable.getSelectedPathName();
+            }
             if (selectedFileName != null)
             {
                 setTagFunction.accept(selectedFileName);
@@ -110,7 +180,7 @@ public class CompareFilePanel extends JPanel
     //Returns delete button to be created
     private JButton createDelButton(Runnable resetAction)
     {
-        JButton button = new JButton(new ImageIcon("FileCatalogApplication/src/images/Delete.png"));
+        JButton button = new JButton(new ImageIcon("src/main/java/assets/Delete.png"));
         button.setVisible(false);
         button.addActionListener(e -> resetAction.run());
         return button;
@@ -123,6 +193,7 @@ public class CompareFilePanel extends JPanel
     {
         setSelection(fileOneTag, fileOneButton, delFileOneButton, fileName);
         updateButtonState(fileTwoButton, false);
+        updateSelectionButtons();
     }
 
     //Sets second tag
@@ -131,6 +202,7 @@ public class CompareFilePanel extends JPanel
     public void setSecondTag(String fileName)
     {
         setSelection(fileTwoTag, fileTwoButton, delFileTwoButton, fileName);
+        updateSelectionButtons();
     }
 
     //Removes selection button and sets the tag info when user has selected a file
@@ -158,6 +230,7 @@ public class CompareFilePanel extends JPanel
         deleteButton.setVisible(false);
         updateButtonState(selectButton, true);
         selectButton.setVisible(true);
+        updateSelectionButtons();
     }
 
     //Opens the comparison display popup
@@ -165,5 +238,13 @@ public class CompareFilePanel extends JPanel
     {
         //TO DO: change it to get the content instead of name
         new ComparisonDisplay(fileOneTag.getName(), fileTwoTag.getName()).setVisible(true);
+    }
+
+    //Gets the comparison mode user selects
+    //Returns:
+    //      -comparisonMode: comparison mode
+    public String getComparisonMode()
+    {
+        return comparisonMode;
     }
 }

@@ -115,4 +115,12 @@ public class CatalogPanel extends JPanel
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
     }
+
+    // Gets the catalog table that has been instantiated in this class
+    // Return:
+    //      -catalogTable: catalog table
+    public CatalogTable getCatalogTable()
+    {
+        return catalogTable;
+    }
 }
