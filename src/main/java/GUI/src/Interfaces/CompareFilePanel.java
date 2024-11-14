@@ -95,8 +95,8 @@ public class CompareFilePanel extends JPanel
         add(fileSelectionPanel, "FileSelection");
         cardLayout.show(this, "ModeSelection");     // Show mode selection panel initially
 
-        fileTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelectionButtons());
-        catalogTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelectionButtons());
+        fileTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelButton());
+        catalogTable.getTable().getSelectionModel().addListSelectionListener(e -> updateSelButton());
     }
 
     // Method to show the file selection panel and set the comparison mode
@@ -108,31 +108,31 @@ public class CompareFilePanel extends JPanel
         cardLayout.show(this, "FileSelection");
         revalidate();
         repaint();
-        updateSelectionButtons();
+        updateSelButton();
     }
 
     // Updates button states based on the current comparison mode and selection
-    private void updateSelectionButtons()
-    {
-        boolean fileTableRowSelected = fileTable.isRowSelected();
-        boolean catalogTableRowSelected = catalogTable.isRowSelected();
+    private void updateSelButton() {
+        boolean fileTableRowSelected = fileTable != null && fileTable.isRowSelected();
+        boolean catalogTableRowSelected = catalogTable != null && catalogTable.isRowSelected();
 
-        // Determine selection availability based on comparison mode
-        switch (comparisonMode)
+        if (comparisonMode == null)
         {
+            return;
+        }
+
+        switch (comparisonMode) {
             case "diskDisk":
-                // Enable only if a row is selected in the fileTable
-                updateButtonState(fileOneButton, fileTableRowSelected && !fileOneTag.isVisible());
-                updateButtonState(fileTwoButton, fileTableRowSelected && fileOneTag.isVisible() && !fileTwoTag.isVisible());
+                updateButtonState(fileOneButton, fileTableRowSelected && fileOneTag != null && !fileOneTag.isVisible());
+                updateButtonState(fileTwoButton, fileTableRowSelected && fileOneTag != null && fileOneTag.isVisible() && !fileTwoTag.isVisible());
                 break;
 
             case "catCat":
-                // Enable only if a row is selected in the catalogTable
-                updateButtonState(fileOneButton, catalogTableRowSelected && !fileOneTag.isVisible());
-                updateButtonState(fileTwoButton, catalogTableRowSelected && fileOneTag.isVisible() && !fileTwoTag.isVisible());
+                updateButtonState(fileOneButton, catalogTableRowSelected && fileOneTag != null && !fileOneTag.isVisible());
+                updateButtonState(fileTwoButton, catalogTableRowSelected && fileOneTag != null && fileOneTag.isVisible() && !fileTwoTag.isVisible());
                 break;
         }
-        compareButton.setEnabled(fileOneTag.isVisible() && fileTwoTag.isVisible());
+        compareButton.setEnabled(fileOneTag != null && fileOneTag.isVisible() && fileTwoTag != null && fileTwoTag.isVisible());
     }
 
     //Updates button state to be clickable and change text font accordingly
@@ -193,7 +193,7 @@ public class CompareFilePanel extends JPanel
     {
         setSelection(fileOneTag, fileOneButton, delFileOneButton, fileName);
         updateButtonState(fileTwoButton, false);
-        updateSelectionButtons();
+        updateSelButton();
     }
 
     //Sets second tag
@@ -202,7 +202,7 @@ public class CompareFilePanel extends JPanel
     public void setSecondTag(String fileName)
     {
         setSelection(fileTwoTag, fileTwoButton, delFileTwoButton, fileName);
-        updateSelectionButtons();
+        updateSelButton();
     }
 
     //Removes selection button and sets the tag info when user has selected a file
@@ -230,7 +230,7 @@ public class CompareFilePanel extends JPanel
         deleteButton.setVisible(false);
         updateButtonState(selectButton, true);
         selectButton.setVisible(true);
-        updateSelectionButtons();
+        updateSelButton();
     }
 
     //Opens the comparison display popup

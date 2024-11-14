@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -31,35 +32,32 @@ public class CatalogTable
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
     //TO DO: needs to be deleted just for demonstration
     private ArrayList<FileInfo> fileInfos = new ArrayList<>();
+    MainFrame mainFrame;
 
     //Arguments: passing the mainFrame
     public CatalogTable(MainFrame mainFrame, JComponent parentComponent)
     {
 
+        this.mainFrame = mainFrame;
         //TO DO: convert from dummy data to real data
         //TO DO: be able to convert strings to integer and date format
         //TO DO: if directory, ext. and size must be empty
 
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
-        fileInfos.add(new FileInfo("Program1", "C", "166B", "21.08.2019 17:00", "/path/to/Program1", "Program to compare two source files."));
-        fileInfos.add(new FileInfo("Program2", "Java", "239GB", "22.08.2019 18:00", "/path/to/Program2", "Program that annotates a source file."));
-        List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
-        for(int i = 0; i < catalogRecords.size(); i++){
-            FileRecord currentRecord = catalogRecords.get(i);
-            fileInfos.add(new FileInfo(currentRecord.getFileName(), currentRecord.getFileType(), Long.toString(currentRecord.getFileSize()),currentRecord.getModificationDate(), currentRecord.getFilePath(), currentRecord.getAnnotation()));
-        }
-        //---------------------Table----------------------
 
-        Object[][] data = new Object[fileInfos.size()][5];
-        for (int i = 0; i < fileInfos.size(); i++)
+        List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
+        Object[][] data = new Object[catalogRecords.size()][5];
+        for (int i = 0; i < catalogRecords.size(); i++)
         {
-            FileInfo fileInfo = fileInfos.get(i);
-            data[i][0] = fileInfo.getName();
-            data[i][1] = fileInfo.getExtension();
-            data[i][2] = fileInfo.getLastEditedDate();
-            data[i][3] = fileInfo.getAnnotation();
+            FileRecord record = catalogRecords.get(i);
+            data[i][0] = record.getFileName();
+            data[i][1] = record.getFileType();
+            data[i][2] = record.getModificationDate();
+            data[i][3] = record.getAnnotation();
             data[i][4] = "View More";
         }
+
+        //---------------------Table----------------------
 
         table = new JTable(data, columns);
         table.setRowHeight(20);
@@ -223,6 +221,31 @@ public class CatalogTable
             return table.getValueAt(selectedRow, 0).toString();
         }
         return null;
+    }
+
+    //refresh table
+    public void refreshTable()
+    {
+        List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
+        Object[][] data = new Object[catalogRecords.size()][5];
+        for (int i = 0; i < catalogRecords.size(); i++) {
+            FileRecord record = catalogRecords.get(i);
+            data[i][0] = record.getFileName();
+            data[i][1] = record.getFileType();
+            data[i][2] = record.getModificationDate();
+            data[i][3] = record.getAnnotation();
+            data[i][4] = "View More";
+        }
+
+        table.setModel(new DefaultTableModel(data, new String[]{"Name", "Ext.", "Last Edited Date", "Annotations", "View More"}));
+        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
+        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
+        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
+
+        table.revalidate();
+        table.repaint();
+        setColumnWidths();
+        addIcon();
     }
 }
 

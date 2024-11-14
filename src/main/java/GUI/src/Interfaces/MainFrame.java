@@ -170,8 +170,8 @@ public class MainFrame extends JFrame implements ActionListener
         // Adds the add annotation panel to lowerPanel if row is selected
         } else if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
-            displayPanel(new AddToCatalogPanel(event -> clearLowerPanel()));
-
+            String pathName = filePanel.getFileTable().getSelectedFilePath(); // Get selected file path
+            displayPanel(new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable()));
         // Adds the move file panel to lowerPanel if row is selected
         } else if (e.getSource() == moveFileButton && filePanel.getFileTable().isRowSelected())
         {
@@ -225,23 +225,6 @@ public class MainFrame extends JFrame implements ActionListener
                             {
                                 selectedFile = catalogPanel.getCatalogTable().getSelectedPathName();
                             }
-                        } else if ("diskCat".equals(compareFilePanelHolder[0].getComparisonMode()))
-                        {
-                            if (!compareFilePanelHolder[0].fileOneTag.isVisible())
-                            {
-                                int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
-                                if (selectedRow != -1)
-                                {
-                                    selectedFile = filePanel.getFileTable().getSelectedPathName();
-                                }
-                        } else
-                        {
-                            int selectedRow = catalogPanel.getCatalogTable().getTable().getSelectedRow();
-                            if (selectedRow != -1)
-                            {
-                                selectedFile = catalogPanel.getCatalogTable().getSelectedPathName();
-                            }
-                        }
                         }
 
                         // Set the selected file in the appropriate tag

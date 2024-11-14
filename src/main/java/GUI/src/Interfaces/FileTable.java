@@ -36,16 +36,15 @@ public class FileTable
     public FileTable(JComponent parentComponent)
     {
         //TO DO: get only source files
-        //TO DO: be able to convert strings to integer and date format
         //TO DO: if directory, ext. and size must be empty
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
+        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
         Object[][] data = new Object[fileRecords.size()][4];
         for (int i = 0; i < fileRecords.size(); i++){
             DirectoryContent currentRecord = fileRecords.get(i);
             data[i][0] = currentRecord.getName();
             data[i][1] = currentRecord.getExtension();
-            data[i][2] = currentRecord.getSize();
+            data[i][2] = formatSize(currentRecord.getSize());
             data[i][3] = currentRecord.getLastModified();
         }
 
@@ -61,7 +60,6 @@ public class FileTable
 
 
         setColumnWidths();
-        //TO DO: if its directory, add file icon
         addIcon();
 
         //-----------------Row Selection------------------
@@ -107,8 +105,11 @@ public class FileTable
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
     }
 
+    
     //
     // Getter of scrollpane so that it can be managed my parent class
     // Returns:
@@ -207,14 +208,26 @@ public class FileTable
         return table;
     }
 
-    public DirectoryContent getDiskSelected(JTable table) {
+
+    // Retrieves the full path of the selected file in the table
+    // Returns path if found, otherwise null
+    public String getSelectedFilePath()
+    {
         int selectedRow = table.getSelectedRow();
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
-        DirectoryContent selectedFile = fileRecords.get(selectedRow);
-        if (selectedRow != -1) {
-            return selectedFile;
-        } else {
-            return null;
+        if (selectedRow != -1)
+        {
+            List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("/Users/lala");
+            return fileRecords.get(selectedRow).getPath();
         }
+        return null;
+    }
+
+    //format the size
+    private String formatSize(long size)
+    {
+        if (size < 1024) return size + " B";
+        int exp = (int) (Math.log(size) / Math.log(1024));
+        char unit = "KMGTPE".charAt(exp - 1); // K, M, G, T, etc.
+        return String.format("%.1f %sB", size / Math.pow(1024, exp), unit);
     }
 }

@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,18 +24,19 @@ import javax.swing.event.ListSelectionListener;
 
 public class AddToCatalogPanel extends JPanel implements ActionListener
 {
-    private FileTable fileTable = new FileTable(this); //the table containing files in catalog
     JButton cancelButton; //button to cancel
     JButton addButton; //button to add to catalog
     JTextArea addAnnotationField; //text field for annotation
     private static final String PLACEHOLDER_TEXT = "Add an annotation: "; //placeholder text inside the text field
-    String annotationInput;
-    File selectedFile;
+    private String pathName; //pathname of selected file
+    private final Runnable refreshCatalog; // Refresh callback
 
-    public AddToCatalogPanel(ActionListener closeListener)
+    public AddToCatalogPanel(String pathName, ActionListener closeListener, Runnable refreshCatalog)
     {
         setLayout(new FlowLayout());
         setOpaque(false);
+        this.pathName = pathName;
+        this.refreshCatalog = refreshCatalog;
 
         addAnnotationField = new JTextArea(PLACEHOLDER_TEXT);
         addAnnotationField.setLineWrap(true);
@@ -82,37 +84,57 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
 
         //TO DO: when add button clicked, add to catalog + add annotation
         addButton = new JButton("Add");
-        addButton.addActionListener(closeListener);
+        addButton.addActionListener(this);
         add(addButton);
 
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(closeListener);
         add(cancelButton);
     }
-    public DirectoryContent getDiskSelected(JTable table) {
-        int selectedRow = table.getSelectedRow();
-        List<DirectoryContent> fileRecords = DiskReader.listDirectoryContents("C:/");
-        DirectoryContent selectedFile = fileRecords.get(selectedRow);
-        if (selectedRow != -1) {
-            return selectedFile;
-        } else {
-            return null;
+
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == addButton)
+        {
+            System.out.println("Selected file path: " + pathName);
+
+            File selectedFile = new File(pathName);
+            DirectoryContent selectedRecord = new DirectoryContent(
+                    selectedFile.getName(),
+                    selectedFile.isDirectory(),
+                    selectedFile.getPath(),
+                    selectedFile.isDirectory() ? "dir" : getFileExtension(selectedFile),
+                    selectedFile.length(),
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedFile.lastModified())
+            );
+            if (!selectedRecord.isDirectory())
+            {
+                String annotation = addAnnotationField.getText();
+                if (annotation.isEmpty() || annotation.equals("Add an annotation: "))
+                {
+                   annotation = null;
+                }
+                MainUtilities.addFileToCatalog(
+                        selectedFile,
+                        annotation,
+                        selectedRecord.getLastModified(),
+                        selectedRecord.getExtension()
+                );
+                refreshCatalog.run();
+            } else
+            {
+                System.out.println("Cannot add a directory to the catalog.");
+            }
         }
     }
-    @Override
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource() == addButton && getDiskSelected(fileTable.getTable()) != null){
-            selectedFile = new File(getDiskSelected(fileTable.getTable()).getPath());
-            if(!selectedFile.isDirectory()){
-                System.out.println("call triggered");
-                DirectoryContent selectedRecord = getDiskSelected(fileTable.getTable());
-                annotationInput = addAnnotationField.getText();
-                MainUtilities.addFileToCatalog( selectedFile,annotationInput,selectedRecord.getLastModified(),selectedRecord.getExtension() );
-            }
-            else{
-                System.out.println("entry failed");
-            }
-        }
+
+    private String getFileExtension(File file)
+    {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
 }
