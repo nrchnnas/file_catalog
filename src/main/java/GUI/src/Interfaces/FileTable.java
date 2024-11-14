@@ -109,7 +109,7 @@ public class FileTable
 
     }
 
-    
+
     //
     // Getter of scrollpane so that it can be managed my parent class
     // Returns:
@@ -172,8 +172,7 @@ public class FileTable
     // Returns:
     //      nameCell: the first column of the field that the icon is added to
     //
-    private void addIcon()
-    {
+    private void addIcon() {
         ImageIcon documentIcon = new ImageIcon("src/main/java/assets/Document.png");
         ImageIcon folderIcon = new ImageIcon("src/main/java/assets/Folder.png");
 
@@ -185,13 +184,13 @@ public class FileTable
                 JLabel nameCell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
                 // Set icon based on if it's a file or directory
-                String ext = table.getValueAt(row, 1).toString();
-                ImageIcon icon = ext.equals("dir") ? folderIcon : documentIcon;
+                String extension = table.getValueAt(row, 1).toString();
+                ImageIcon icon = extension.isEmpty() ? folderIcon : documentIcon;
 
                 Image scaledImage = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
                 nameCell.setIcon(new ImageIcon(scaledImage));
 
-                nameCell.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                nameCell.setHorizontalAlignment(SwingConstants.LEFT);
                 nameCell.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
                 return nameCell;
             }
