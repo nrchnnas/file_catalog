@@ -6,10 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DiskReader {
     private static final Logger logger = Logger.getLogger(DiskReader.class.getName());
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+    //Only for source files
+    private static final Set<String> SOURCE_FILE_EXTENSIONS = new HashSet<>(Arrays.asList(
+            "java", "c", "cpp", "py", "js", "ts", "cs", "rb", "php", "go", "rs"
+    ));
 
     // Private constructor to prevent instantiation
     private DiskReader() {}
@@ -32,21 +41,39 @@ public class DiskReader {
 
         // Retrieve contents; ensure no NullPointerException if listFiles() returns null
         File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                String extension = getFileExtension(file);
-                long size = file.length();
-                String lastModified = dateFormat.format(file.lastModified());
-
-                contents.add(new DirectoryContent(
-                        file.getName(),
-                        file.isDirectory(),
-                        file.getAbsolutePath(),
-                        extension,
-                        size,
-                        lastModified
-                ));
+        if (files != null)
+        {
+            for (File file : files)
+            {
+                if (file.isDirectory())
+                {
+                    // Add directories without filtering
+                    contents.add(new DirectoryContent(
+                            file.getName(),
+                            true,
+                            file.getAbsolutePath(),
+                            "",  // No extension for directories
+                            file.length(),   // Size is not relevant for directories
+                            dateFormat.format(file.lastModified())
+                    ));
+                } else
+                {
+                    // Only add source files based on allowed extensions
+                    String extension = getFileExtension(file);
+                    if (SOURCE_FILE_EXTENSIONS.contains(extension))
+                    {
+                        contents.add(new DirectoryContent(
+                                file.getName(),
+                                false,
+                                file.getAbsolutePath(),
+                                extension,
+                                file.length(),
+                                dateFormat.format(file.lastModified())
+                        ));
+                    }
+                }
             }
+
         } else {
             logger.warning(() -> "Unable to retrieve contents of directory: " + directoryPath);
         }
