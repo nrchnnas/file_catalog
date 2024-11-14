@@ -7,12 +7,21 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.DiskComparison;
+import utilities.FileComparison;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import utilities.FileComparison;
+import utilities.DiskComparison;
+
 
 public class CompareFilePanel extends JPanel
 {
+    private static final Logger logger = Logger.getLogger(CompareFilePanel.class.getName());
     private final JPanel modeSelectionPanel; // Panel for mode buttons
     private final JPanel fileSelectionPanel; // Panel for file selection buttons
     private final JButton cancelModeButton; // button to cancel mode selection
@@ -234,12 +243,25 @@ public class CompareFilePanel extends JPanel
     }
 
     //Opens the comparison display popup
-    private void openComparisonPopup()
-    {
-        //TO DO: change it to get the content instead of name
-        new ComparisonDisplay(fileOneTag.getName(), fileTwoTag.getName()).setVisible(true);
+    private void openComparisonPopup() {
+        try {
+            String comparisonResult = "";
+            if ("diskDisk".equals(comparisonMode)) {
+                comparisonResult = DiskComparison.compareFileMetadata(fileOneTag.getName(), fileTwoTag.getName())
+                        ? "Files are identical in size and modification date."
+                        : "Files differ in size or modification date.";
+            } else if ("catCat".equals(comparisonMode)) {
+                comparisonResult = "Comparing file contents:\n";
+                FileComparison.compareFiles(fileOneTag.getName(), fileTwoTag.getName());
+                // Note: `compareFiles` logs differences directly to console or logger.
+            }
+            // Open popup with results
+            new ComparisonDisplay(fileOneTag.getName(), fileTwoTag.getName()).setVisible(true);
+            logger.info("Comparison completed: " + comparisonResult);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error during file comparison: " + e.getMessage(), e);
+        }
     }
-
     //Gets the comparison mode user selects
     //Returns:
     //      -comparisonMode: comparison mode

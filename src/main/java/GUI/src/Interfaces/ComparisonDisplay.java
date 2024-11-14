@@ -13,9 +13,9 @@ public class ComparisonDisplay extends JFrame
 {
 
     //Arguments:
-    //      -fileOneContent: contains the content from file one
-    //      -fileTwoContent: contains the content from file two
-    public ComparisonDisplay(String fileOneContent, String fileTwoContent)
+    //      - comparisonResult: String with the comparison result or difference
+    //      - mode: String representing the comparison mode ("diskDisk" or "catCat")
+    public ComparisonDisplay(String comparisonResult, String mode)
     {
         super("File Comparison");
         setSize(800, 600);
@@ -23,17 +23,26 @@ public class ComparisonDisplay extends JFrame
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); //center
 
-        JTextArea fileOneDisplay = new JTextArea(10, 20);
-        JTextArea fileTwoDisplay = new JTextArea(10, 20);
-        fileOneDisplay.setText("Contents of " + fileOneContent);
-        fileTwoDisplay.setText("Contents of " + fileTwoContent);
-        fileOneDisplay.setEditable(false);
-        fileTwoDisplay.setEditable(false);
+        JTextArea resultDisplay = new JTextArea();
+        resultDisplay.setText(formatComparisonResult(comparisonResult, mode));
+        resultDisplay.setEditable(false);
 
-        JPanel displayPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        displayPanel.add(new JScrollPane(fileOneDisplay));
-        displayPanel.add(new JScrollPane(fileTwoDisplay));
+        add(new JScrollPane(resultDisplay), BorderLayout.CENTER);
 
-        add(displayPanel, BorderLayout.CENTER);
+        add(new JScrollPane(resultDisplay), BorderLayout.CENTER);
+    }
+
+    private String formatComparisonResult(String comparisonResult, String mode)
+    {
+        if ("diskDisk".equals(mode))
+        {
+            return "File Metadata Comparison Result:\n\n" + comparisonResult;
+        } else if ("catCat".equals(mode))
+        {
+            return "File Content Comparison Result:\n\n" + comparisonResult;
+        } else
+        {
+            return "Unknown comparison mode.";
+        }
     }
 }

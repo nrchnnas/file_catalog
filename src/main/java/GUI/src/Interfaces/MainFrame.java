@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.*;
 
 public class MainFrame extends JFrame implements ActionListener
@@ -154,8 +156,7 @@ public class MainFrame extends JFrame implements ActionListener
         // Opens selected file
         if (e.getSource() == openFileButton)
         {
-            //TO DO: opens source file
-
+            openSelectedFile();
         // Edits selected file name
         } else if (e.getSource() == editFileNameButton)
         {
@@ -318,6 +319,44 @@ public class MainFrame extends JFrame implements ActionListener
                 ((AddToCatalogPanel) currentOpenPanel).updateFilePath(newPathName); // Update AddToCatalogPanel path
             }
         });
+    }
+
+    // Method to open the selected file in the default application
+    private void openSelectedFile()
+    {
+        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
+        String filePath = filePanel.getFileTable().getSelectedFilePath(); // Get the file path
+
+        if (filePath != null)
+        {
+            File file = new File(filePath);
+            if (file.exists() && file.isFile())
+            {
+                try
+                {
+                    Desktop desktop = Desktop.getDesktop();
+                    if (desktop.isSupported(Desktop.Action.OPEN))
+                    {
+                        desktop.open(file);
+                    } else
+                    {
+                        JOptionPane.showMessageDialog(this, "Open action is not supported on this platform.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Could not open the file. Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (UnsupportedOperationException ex)
+                {
+                    JOptionPane.showMessageDialog(this, "Desktop API is not supported on this platform.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else
+            {
+                JOptionPane.showMessageDialog(this, "The selected file does not exist or is not a file.", "Error", JOptionPane.WARNING_MESSAGE);
+            }
+        } else
+        {
+            JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }
 
