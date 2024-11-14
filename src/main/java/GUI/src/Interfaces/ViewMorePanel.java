@@ -8,6 +8,9 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.FileCatalog;
+import utilities.FileRecord;
+
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
@@ -20,21 +23,23 @@ public class ViewMorePanel extends JPanel
     private JButton deleteButton, viewButton, editButton, doneButton;
     private JTable infoTable; //table to display all the information
     private JTextArea annotationArea; //where annotations will be shown
-    private FileInfo fileInfo; //info about file as a struct
+    private FileRecord fileInfo; //info about file as a struct
+    private Runnable refreshCatalog; //refresh runnable
 
-    public ViewMorePanel(FileInfo fileInfo)
+    public ViewMorePanel(FileRecord fileInfo, Runnable refreshCatalog)
     {
         this.fileInfo = fileInfo;
+        this.refreshCatalog = refreshCatalog;
         setLayout(new BorderLayout());
 
         //---------------------Table----------------------
-        String[][] tableData =
+        Object[][] tableData =
         {
-            {"Name", fileInfo.getName()},
-            {"Extension", fileInfo.getExtension()},
-            {"Size", fileInfo.getSize()},
-            {"Last Edited", fileInfo.getLastEditedDate()},
-            {"Location", fileInfo.getLocation()}
+            {"Name", fileInfo.getFileName()},
+            {"Extension", fileInfo.getFileType()},
+            {"Size", fileInfo.getFileSize()},
+            {"Last Edited", fileInfo.getModificationDate()},
+            {"Location", fileInfo.getFilePath()}
         };
 
         String[] tableColumns = {"Attribute", "Value"};
@@ -100,10 +105,17 @@ public class ViewMorePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this file from the catalog?");
+            int confirm = JOptionPane.showConfirmDialog(
+                    ViewMorePanel.this,
+                    "Are you sure you want to delete this file from the catalog?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION
+            );
             if (confirm == JOptionPane.YES_OPTION)
             {
-                //TO DO: Logic to delete file from catalog
+                FileCatalog.deleteFile(fileInfo.getId()); // Assume deleteFile uses file ID
+                refreshCatalog.run(); // Refresh the catalog table to reflect deletion
+                JOptionPane.showMessageDialog(ViewMorePanel.this, "File deleted successfully.");
             }
         }
     }
@@ -114,7 +126,7 @@ public class ViewMorePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getName());
+            ContentDisplay contentDisplay = new ContentDisplay(fileInfo.getFileName());
             contentDisplay.setVisible(true);
         }
     }

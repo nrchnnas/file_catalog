@@ -23,8 +23,8 @@ public class FilePanel extends JPanel implements ActionListener
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("src/main/java/assets/Chevron Left Light.png");
-        ImageIcon REDO_ICON = new ImageIcon("src/main/java/assets/Chevron Right Light.png");
+        ImageIcon UNDO_ICON = new ImageIcon("src/main/java/assets/Chevron Left Dark.png");
+        ImageIcon REDO_ICON = new ImageIcon("src/main/java/assets/Chevron Right Dark.png");
         ImageIcon SEARCH_ICON = new ImageIcon("src/main/java/assets/Search.png");
 
         //----------------Current Directory Panel-------------------
@@ -34,11 +34,13 @@ public class FilePanel extends JPanel implements ActionListener
         undoButton.setFocusable(false);
         undoButton.setIcon(UNDO_ICON);
         undoButton.addActionListener(this);
+        undoButton.setEnabled(false);
 
         redoButton = new JButton();
         redoButton.setFocusable(false);
         redoButton.setIcon(REDO_ICON);
         redoButton.addActionListener(this);
+        redoButton.setEnabled(false);
 
         //TO DO: make currDirLabel dynamic
         JLabel currDirLabel = new JLabel("Disk"); //label for the current directory we are in

@@ -6,6 +6,8 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.FileRecord;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.DefaultCellEditor;
@@ -105,8 +107,8 @@ public class ViewMoreButton
             {
                 try
                 {
-                    FileInfo fileInfo = catalogTable.getFileAt(selectedRow);
-                    mainFrame.displayPanel(new ViewMorePanel(fileInfo));
+                    FileRecord fileInfo = catalogTable.getFileAt(selectedRow);
+                    mainFrame.displayPanel(new ViewMorePanel(fileInfo,() -> catalogTable.refreshTable()));
                 } catch (Exception ex)
                 {
                     JOptionPane.showMessageDialog(mainFrame, "Error loading file details: " + ex.getMessage());
