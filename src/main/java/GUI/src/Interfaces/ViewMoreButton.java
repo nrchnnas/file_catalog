@@ -103,6 +103,7 @@ public class ViewMoreButton
         private void openViewMoreDisplay()
         {
             int selectedRow = catalogTable.table.getEditingRow();
+
             if (selectedRow != -1)
             {
                 try

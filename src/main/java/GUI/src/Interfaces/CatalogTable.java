@@ -30,8 +30,6 @@ public class CatalogTable
 {
     JTable table; //reference to the table that contains the files in catalog
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
-    //TO DO: needs to be deleted just for demonstration
-    private ArrayList<FileRecord> fileInfos = new ArrayList<>();
     MainFrame mainFrame;
 
     //Arguments: passing the mainFrame
@@ -197,7 +195,7 @@ public class CatalogTable
     //
     public FileRecord getFileAt(int rowIndex)
     {
-        return fileInfos.get(rowIndex);
+        return FileCatalog.getAllFiles().get(rowIndex);
     }
 
     // Gets the catalog table that has been instantiated in this class
