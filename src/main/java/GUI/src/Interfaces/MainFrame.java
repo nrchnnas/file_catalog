@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import javax.swing.*;
 
 public class MainFrame extends JFrame implements ActionListener
@@ -36,12 +37,12 @@ public class MainFrame extends JFrame implements ActionListener
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
-        ImageIcon OPEN_ICON = new ImageIcon("src/main/resources/Open.png");
-        ImageIcon EDIT_ICON = new ImageIcon("src/main/resources/Edit.png");
-        ImageIcon COMPARE_ICON = new ImageIcon("src/main/resources/Compare.png");
-        ImageIcon VALIDATE_ICON = new ImageIcon("src/main/resources/Refresh.png");
-        ImageIcon ADD_ICON = new ImageIcon("src/main/resources/Add.png");
-        ImageIcon MOVE_ICON = new ImageIcon("src/main/resources/Move.png");
+        ImageIcon OPEN_ICON = new ImageIcon(getImage("src/main/resources/Open.png"));
+        ImageIcon EDIT_ICON = new ImageIcon(getImage("src/main/resources/Edit.png"));
+        ImageIcon COMPARE_ICON = new ImageIcon(getImage("src/main/resources/Compare.png"));
+        ImageIcon VALIDATE_ICON = new ImageIcon(getImage("src/main/resources/Refresh.png"));
+        ImageIcon ADD_ICON = new ImageIcon(getImage("src/main/resources/Add.png"));
+        ImageIcon MOVE_ICON = new ImageIcon(getImage("src/main/resources/Move.png"));
 
         //-------------------------Buttons--------------------------
 
@@ -357,6 +358,12 @@ public class MainFrame extends JFrame implements ActionListener
         {
             JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 }
 

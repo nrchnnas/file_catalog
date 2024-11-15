@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.util.List;
 
 public class FileTable {
@@ -181,8 +182,8 @@ public class FileTable {
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon("src/main/resources/Document.png");
-        ImageIcon folderIcon = new ImageIcon("src/main/resources/Folder.png");
+        ImageIcon documentIcon = new ImageIcon(getImage("src/main/resources/Document.png"));
+        ImageIcon folderIcon = new ImageIcon(getImage("src/main/resources/Folder.png"));
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {
@@ -262,5 +263,11 @@ public class FileTable {
     public List<DirectoryContent> getFileRecords()
     {
         return fileRecords;
+    }
+
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 }

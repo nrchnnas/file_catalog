@@ -18,6 +18,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import GUI.src.Interfaces.MainFrame;
 import utilities.*;
@@ -168,7 +169,7 @@ public class CatalogTable
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon("src/main/resources/Document.png");
+        ImageIcon documentIcon = new ImageIcon(getImage("src/main/resources/Document.png"));
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {
@@ -267,6 +268,12 @@ public class CatalogTable
         table.repaint();
         setColumnWidths();
         addIcon();
+    }
+
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 }
 

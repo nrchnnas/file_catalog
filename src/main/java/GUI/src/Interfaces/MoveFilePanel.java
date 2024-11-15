@@ -10,6 +10,7 @@ package GUI.src.Interfaces;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class MoveFilePanel extends JPanel
 {
@@ -40,7 +41,7 @@ public class MoveFilePanel extends JPanel
         chooseNewDirButton.addActionListener(e -> userChooseNewDir.run()); //run the thread that waits for user to choose directory from file table
 
         deleteButton = new JButton();
-        deleteButton.setIcon(new ImageIcon("src/main/java/assets/Delete.png"));
+        deleteButton.setIcon(new ImageIcon(getImage("src/main/java/assets/Delete.png")));
         deleteButton.setVisible(false); // initially hidden
         deleteButton.addActionListener(e -> resetSelection()); //run this to reset the button after the tag deletion button is clicked
 
@@ -94,6 +95,12 @@ public class MoveFilePanel extends JPanel
         chooseNewDirButton.setVisible(true);
         chooseNewDirButton.setText("Choose New Directory");
         chooseNewDirButton.setEnabled(false);
+    }
+
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 }
 

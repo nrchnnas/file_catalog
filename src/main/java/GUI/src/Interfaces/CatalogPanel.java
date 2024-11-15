@@ -11,6 +11,7 @@ import utilities.FileCatalog;
 import utilities.FileRecord;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -30,7 +31,7 @@ public class CatalogPanel extends JPanel
     {
 
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
-        ImageIcon SEARCH_ICON = new ImageIcon("src/main/resources/Search.png");
+        ImageIcon SEARCH_ICON = new ImageIcon(getImage("src/main/resources/Search.png"));
 
         //----------------------Title Panel------------------------
 
@@ -169,4 +170,9 @@ public class CatalogPanel extends JPanel
         return catalogTable;
     }
 
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
+    }
 }
