@@ -76,9 +76,9 @@ public class CatalogPanel extends JPanel
         dateField = new MyTextField("by Last edited date");
         dateField.setBackground(LIGHT_GRAY);
 
-//        annotationField.getDocument().addDocumentListener(new SearchListener());
-//        fileTypeField.getDocument().addDocumentListener(new SearchListener());
-//        dateField.getDocument().addDocumentListener(new SearchListener());
+        annotationField.getDocument().addDocumentListener(new SearchListener());
+        fileTypeField.getDocument().addDocumentListener(new SearchListener());
+        dateField.getDocument().addDocumentListener(new SearchListener());
 
         JPanel searchOptionPanel = new JPanel(new GridBagLayout());
         searchOptionPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -139,13 +139,21 @@ public class CatalogPanel extends JPanel
     }
 
     private void performSearch() {
-        String searchTerm = searchField.getText().trim().toLowerCase();
+        String searchTerm = searchField.getInputText().trim().toLowerCase();
+        String fileType = fileTypeField.getInputText().trim().toLowerCase();
+        String annotation = annotationField.getInputText().trim().toLowerCase();
+        String date = dateField.getInputText().trim().toLowerCase();
         List<FileRecord> allFiles = FileCatalog.getAllFiles();
         List<FileRecord> filteredFiles = new ArrayList<>();
-
         for (FileRecord file : allFiles) {
             String fileName = file.getFileName().toLowerCase();
-            if (fileName.contains(searchTerm)) {
+
+            boolean matchesSearch = searchTerm.isEmpty()|| fileName.contains(searchTerm);
+            boolean matchesType = fileType.isEmpty() || fileName.contains(fileType);
+            boolean matchesDate = date.isEmpty() || file.getModificationDate().contains(date);
+            boolean matchesAnnotation = annotation.isEmpty() || (file.getAnnotation() != null && file.getAnnotation().toLowerCase().contains(annotation));
+
+            if (matchesSearch && matchesType && matchesDate && matchesAnnotation) {
                 filteredFiles.add(file);
             }
         }

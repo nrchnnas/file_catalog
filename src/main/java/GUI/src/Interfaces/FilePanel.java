@@ -227,8 +227,8 @@ public class FilePanel extends JPanel implements ActionListener
         }
     }
     private void performSearch() {
-        String searchTerm = searchField.getText().trim().toLowerCase();
-        String suffixTerm = suffixField.getText().trim().toLowerCase();
+        String searchTerm = searchField.getInputText().trim().toLowerCase();
+        String suffixTerm = suffixField.getInputText().trim().toLowerCase();
 
         // Get all files in the current directory
         List<DirectoryContent> allFiles = DiskReader.listDirectoryContents(currDirLabel.getText());
@@ -241,7 +241,7 @@ public class FilePanel extends JPanel implements ActionListener
             boolean matchesSearch = searchTerm.isEmpty() || fileName.contains(searchTerm);
             boolean matchesSuffix = suffixTerm.isEmpty() || fileName.endsWith(suffixTerm);
 
-            if (matchesSearch || matchesSuffix) {
+            if (matchesSearch && matchesSuffix) {
                 filteredFiles.add(file);
             }
         }
