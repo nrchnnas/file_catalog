@@ -6,8 +6,17 @@
 //
 
 package GUI.src.Interfaces;
+import utilities.DirectoryContent;
+import utilities.FileCatalog;
+import utilities.FileRecord;
+
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.util.List;
+
 
 public class CatalogPanel extends JPanel
 {
@@ -39,6 +48,7 @@ public class CatalogPanel extends JPanel
 
         searchField = new MyTextField("Search");
         searchField.setBackground(LIGHT_GRAY);
+        searchField.getDocument().addDocumentListener(new SearchListener());
 
         JPanel searchPanel = new JPanel(new GridBagLayout());
         searchPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -65,6 +75,10 @@ public class CatalogPanel extends JPanel
         fileTypeField.setBackground(LIGHT_GRAY);
         dateField = new MyTextField("by Last edited date");
         dateField.setBackground(LIGHT_GRAY);
+
+//        annotationField.getDocument().addDocumentListener(new SearchListener());
+//        fileTypeField.getDocument().addDocumentListener(new SearchListener());
+//        dateField.getDocument().addDocumentListener(new SearchListener());
 
         JPanel searchOptionPanel = new JPanel(new GridBagLayout());
         searchOptionPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -114,6 +128,29 @@ public class CatalogPanel extends JPanel
         this.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
+    }
+    private class SearchListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) { performSearch(); }
+        @Override
+        public void removeUpdate(DocumentEvent e) { performSearch(); }
+        @Override
+        public void changedUpdate(DocumentEvent e) { performSearch(); }
+    }
+
+    private void performSearch() {
+        String searchTerm = searchField.getText().trim().toLowerCase();
+        List<FileRecord> allFiles = FileCatalog.getAllFiles();
+        List<FileRecord> filteredFiles = new ArrayList<>();
+
+        for (FileRecord file : allFiles) {
+            String fileName = file.getFileName().toLowerCase();
+            if (fileName.contains(searchTerm)) {
+                filteredFiles.add(file);
+            }
+        }
+
+        catalogTable.updateTable(filteredFiles);
     }
 
     // Gets the catalog table that has been instantiated in this class
