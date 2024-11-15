@@ -12,6 +12,7 @@ import utilities.DiskReader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -36,9 +37,9 @@ public class FilePanel extends JPanel implements ActionListener
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("src/main/resources/Chevron Left Dark.png");
-        ImageIcon REDO_ICON = new ImageIcon("src/main/resources/Chevron Right Dark.png");
-        ImageIcon SEARCH_ICON = new ImageIcon("src/main/resources/Search.png");
+        ImageIcon UNDO_ICON = new ImageIcon(getImage("src/main/resources/Chevron Left Dark.png"));
+        ImageIcon REDO_ICON = new ImageIcon(getImage("src/main/resources/Chevron Right Dark.png"));
+        ImageIcon SEARCH_ICON = new ImageIcon(getImage("src/main/resources/Search.png"));
 
         //----------------Current Directory Panel-------------------
 
@@ -256,5 +257,11 @@ public class FilePanel extends JPanel implements ActionListener
     {
         addToHistory(directory);
         loadDirectory(directory);
+    }
+
+    public static Image getImage(final String pathAndFileName)
+    {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 }
