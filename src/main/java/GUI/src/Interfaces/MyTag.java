@@ -51,10 +51,10 @@ public class MyTag extends JPanel
         ImageIcon icon;
         if (isFile)
         {
-            icon = new ImageIcon("src/main/java/assets/Document.png");
+            icon = new ImageIcon("src/main/resources/Document.png");
         } else
         {
-            icon = new ImageIcon("src/main/java/assets/Folder.png");
+            icon = new ImageIcon("src/main/resources/Folder.png");
         }
         iconLabel.setIcon(icon);
     }

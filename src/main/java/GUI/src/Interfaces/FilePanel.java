@@ -36,9 +36,9 @@ public class FilePanel extends JPanel implements ActionListener
     {
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
 
-        ImageIcon UNDO_ICON = new ImageIcon("src/main/java/assets/Chevron Left Dark.png");
-        ImageIcon REDO_ICON = new ImageIcon("src/main/java/assets/Chevron Right Dark.png");
-        ImageIcon SEARCH_ICON = new ImageIcon("src/main/java/assets/Search.png");
+        ImageIcon UNDO_ICON = new ImageIcon("src/main/resources/Chevron Left Dark.png");
+        ImageIcon REDO_ICON = new ImageIcon("src/main/resources/Chevron Right Dark.png");
+        ImageIcon SEARCH_ICON = new ImageIcon("src/main/resources/Search.png");
 
         //----------------Current Directory Panel-------------------
 

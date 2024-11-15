@@ -30,7 +30,7 @@ public class CatalogPanel extends JPanel
     {
 
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
-        ImageIcon SEARCH_ICON = new ImageIcon("src/main/java/assets/Search.png");
+        ImageIcon SEARCH_ICON = new ImageIcon("src/main/resources/Search.png");
 
         //----------------------Title Panel------------------------
 
