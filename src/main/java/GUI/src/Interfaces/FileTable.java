@@ -182,8 +182,8 @@ public class FileTable {
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon(getImage("src/main/resources/Document.png"));
-        ImageIcon folderIcon = new ImageIcon(getImage("src/main/resources/Folder.png"));
+        ImageIcon documentIcon = new ImageIcon(getClass().getResource("src/main/resources/Document.png"));
+        ImageIcon folderIcon = new ImageIcon(getClass().getResource("src/main/resources/Folder.png"));
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {

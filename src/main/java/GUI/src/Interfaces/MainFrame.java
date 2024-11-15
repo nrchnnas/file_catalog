@@ -37,12 +37,12 @@ public class MainFrame extends JFrame implements ActionListener
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         Color DARK_GRAY = Color.decode("#CFCFCF");
 
-        ImageIcon OPEN_ICON = new ImageIcon(getImage("src/main/resources/Open.png"));
-        ImageIcon EDIT_ICON = new ImageIcon(getImage("src/main/resources/Edit.png"));
-        ImageIcon COMPARE_ICON = new ImageIcon(getImage("src/main/resources/Compare.png"));
-        ImageIcon VALIDATE_ICON = new ImageIcon(getImage("src/main/resources/Refresh.png"));
-        ImageIcon ADD_ICON = new ImageIcon(getImage("src/main/resources/Add.png"));
-        ImageIcon MOVE_ICON = new ImageIcon(getImage("src/main/resources/Move.png"));
+        ImageIcon OPEN_ICON = new ImageIcon(getClass().getResource("src/main/resources/Open.png"));
+        ImageIcon EDIT_ICON = new ImageIcon(getClass().getResource("src/main/resources/Edit.png"));
+        ImageIcon COMPARE_ICON = new ImageIcon(getClass().getResource("src/main/resources/Compare.png"));
+        ImageIcon VALIDATE_ICON = new ImageIcon(getClass().getResource("src/main/resources/Refresh.png"));
+        ImageIcon ADD_ICON = new ImageIcon(getClass().getResource("src/main/resources/Add.png"));
+        ImageIcon MOVE_ICON = new ImageIcon(getClass().getResource("src/main/resources/Move.png"));
 
         //-------------------------Buttons--------------------------
 

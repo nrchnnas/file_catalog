@@ -169,7 +169,7 @@ public class CatalogTable
     //
     private void addIcon()
     {
-        ImageIcon documentIcon = new ImageIcon(getImage("src/main/resources/Document.png"));
+        ImageIcon documentIcon = new ImageIcon(getClass().getResource("src/main/resources/Document.png"));
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer()
         {
