@@ -17,6 +17,8 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class FilePanel extends JPanel implements ActionListener
 {
@@ -68,6 +70,8 @@ public class FilePanel extends JPanel implements ActionListener
 
         searchField = new MyTextField("Search");
         suffixField = new MyTextField("by suffix");
+        searchField.getDocument().addDocumentListener(new SearchListener());
+        suffixField.getDocument().addDocumentListener(new SearchListener());
 
         JPanel searchPanel = new JPanel(new GridBagLayout());
         searchPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -117,6 +121,23 @@ public class FilePanel extends JPanel implements ActionListener
         addToHistory(initialDirectory);
         loadDirectory(initialDirectory);
         fileTable.getTable().getSelectionModel().addListSelectionListener(new DirectorySelectionListener());
+    }
+
+    private class SearchListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            performSearch();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            performSearch();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            performSearch();
+        }
     }
 
     @Override
@@ -204,6 +225,29 @@ public class FilePanel extends JPanel implements ActionListener
             boolean isDirectorySelected = fileTable.isSelectedDirectory();
             forwardButton.setEnabled(isDirectorySelected);
         }
+    }
+    private void performSearch() {
+        String searchTerm = searchField.getText().trim().toLowerCase();
+        String suffixTerm = suffixField.getText().trim().toLowerCase();
+
+        // Get all files in the current directory
+        List<DirectoryContent> allFiles = DiskReader.listDirectoryContents(currDirLabel.getText());
+        List<DirectoryContent> filteredFiles = new ArrayList<>();
+
+        for (DirectoryContent file : allFiles) {
+            String fileName = file.getName().toLowerCase();
+
+            // Check if file name matches the search term and suffix
+            boolean matchesSearch = searchTerm.isEmpty() || fileName.contains(searchTerm);
+            boolean matchesSuffix = suffixTerm.isEmpty() || fileName.endsWith(suffixTerm);
+
+            if (matchesSearch || matchesSuffix) {
+                filteredFiles.add(file);
+            }
+        }
+
+        // Update the table with filtered results
+        fileTable.updateTable(filteredFiles);
     }
 
     // Method to navigate to a new directory (called from FileTable on double-click, now removed)
