@@ -245,6 +245,29 @@ public class CatalogTable
         setColumnWidths();
         addIcon();
     }
+    public void updateTable(List<FileRecord> filteredRecords)
+    {
+
+        Object[][] data = new Object[filteredRecords.size()][5];
+        for (int i = 0; i < filteredRecords.size(); i++) {
+            FileRecord record = filteredRecords.get(i);
+            data[i][0] = record.getFileName();
+            data[i][1] = record.getFileType();
+            data[i][2] = record.getModificationDate();
+            data[i][3] = record.getAnnotation();
+            data[i][4] = "View More";
+        }
+
+        table.setModel(new DefaultTableModel(data, new String[]{"Name", "Ext.", "Last Edited Date", "Annotations", "View More"}));
+        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
+        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
+        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
+
+        table.revalidate();
+        table.repaint();
+        setColumnWidths();
+        addIcon();
+    }
 }
 
 
