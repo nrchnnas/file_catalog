@@ -54,4 +54,9 @@ public class MyTextField extends JTextField implements FocusListener
             this.setForeground(Color.GRAY);
         }
     }
+    public String getInputText() {
+        String text = super.getText();
+        // If text is the same as placeholder, return empty string
+        return text.equals(placeholder) ? "" : text;
+    }
 }
