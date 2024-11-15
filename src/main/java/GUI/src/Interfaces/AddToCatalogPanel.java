@@ -111,10 +111,22 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
             );
             if (!selectedRecord.isDirectory())
             {
-                String annotation = addAnnotationField.getText();
-                if (annotation.isEmpty() || annotation.equals("Add an annotation: "))
+                if (FileCatalog.isFileInCatalog(selectedFile.getPath()))
                 {
-                   annotation = null;
+                    JOptionPane.showMessageDialog(
+                            AddToCatalogPanel.this,
+                            "This file is already in the catalog.",
+                            "Duplicate File",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    return; // Do not proceed with adding the file
+                }
+
+                // Proceed to add the file if it's not a duplicate
+                String annotation = addAnnotationField.getText();
+                if (annotation.isEmpty() || annotation.equals(PLACEHOLDER_TEXT))
+                {
+                    annotation = null;
                 }
                 MainUtilities.addFileToCatalog(
                         selectedFile,
@@ -142,7 +154,6 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
         this.pathName = newPathName;
         System.out.println("Updated selected file path: " + pathName);
     }
-
 
 }
 
