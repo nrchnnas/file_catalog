@@ -30,7 +30,8 @@ public class FileTable {
     public FileTable(FilePanel parentPanel) {
         this.parentPanel = parentPanel;
         String[] columns = {"Name", "Ext.", "Size", "Last Edited Date"};
-        this.fileRecords = DiskReader.listDirectoryContents("/Users/lala"); // Initial directory
+        System.out.println((System.getProperty("user.dir")));
+        this.fileRecords = DiskReader.listDirectoryContents(System.getProperty("user.dir")); // Initial directory
         Object[][] data = createTableData(fileRecords);
 
         //---------------------Table----------------------

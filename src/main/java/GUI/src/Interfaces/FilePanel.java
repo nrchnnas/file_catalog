@@ -52,7 +52,7 @@ public class FilePanel extends JPanel implements ActionListener
         forwardButton.addActionListener(this);
         forwardButton.setEnabled(false);
 
-        String initialDirectory = "/Users/lala";
+        String initialDirectory = System.getProperty("user.dir");
         currDirLabel = new JLabel(initialDirectory);
 
         JPanel currDirPanel = new JPanel();
