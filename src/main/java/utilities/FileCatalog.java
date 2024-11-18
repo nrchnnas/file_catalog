@@ -218,4 +218,25 @@ public class FileCatalog {
             logger.log(Level.SEVERE, String.format("Failed to delete file with ID: %d", fileId), e);
         }
     }
+
+    public static boolean isFileInCatalog(String filePath)
+    {
+        String sql = "SELECT COUNT(*) FROM file_catalog WHERE file_path = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setString(1, filePath);
+            try (ResultSet rs = pstmt.executeQuery())
+            {
+                if (rs.next())
+                {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e)
+        {
+            logger.log(Level.SEVERE, "Failed to check if file exists in catalog", e);
+        }
+        return false;
+    }
 }
