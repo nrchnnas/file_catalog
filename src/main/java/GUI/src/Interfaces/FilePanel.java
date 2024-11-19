@@ -8,7 +8,6 @@
 package GUI.src.Interfaces;
 import utilities.DirectoryContent;
 import utilities.DiskReader;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -123,7 +122,8 @@ public class FilePanel extends JPanel implements ActionListener
         fileTable.getTable().getSelectionModel().addListSelectionListener(new DirectorySelectionListener());
     }
 
-    private class SearchListener implements DocumentListener {
+    private class SearchListener implements DocumentListener
+    {
         @Override
         public void insertUpdate(DocumentEvent e) {
             performSearch();
@@ -143,14 +143,15 @@ public class FilePanel extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        //If back button pressed, update directory based on history
         if (e.getSource() == backButton && historyIndex > 0)
         {
             historyIndex--;
             String prevDir = directoryHistory.get(historyIndex);
             loadDirectory(prevDir);
+        //If forward button pressed, get new selected directory to update current directory
         } else if (e.getSource() == forwardButton)
         {
-            // Forward button is now used to enter the selected directory
             String selectedDirectory = fileTable.getSelectedDirectoryPath();
             if (selectedDirectory != null)
             {
@@ -159,6 +160,8 @@ public class FilePanel extends JPanel implements ActionListener
             }
         }
     }
+
+    //----------------Private Function---------------
 
     // Updates back and forward button icons and states
     private void updateButtonIcon()
@@ -172,7 +175,7 @@ public class FilePanel extends JPanel implements ActionListener
         backButton.setEnabled(historyIndex > 0);
     }
 
-    // Adds a directory to the navigation history
+    // Adds a directory to the navigation history and updates button icon based on directory history
     private void addToHistory(String directory)
     {
         // Remove any forward history if new navigation is made
@@ -183,10 +186,6 @@ public class FilePanel extends JPanel implements ActionListener
         directoryHistory.add(directory);
         historyIndex++;
         updateButtonIcon();
-        System.out.println("Navigating to: " + directory);
-        System.out.println("Directory History: " + directoryHistory);
-        System.out.println("History Index: " + historyIndex);
-        System.out.println("Directory size: " + directoryHistory.size());
     }
 
     // Loads the selected directory and updates the table
@@ -226,7 +225,12 @@ public class FilePanel extends JPanel implements ActionListener
             forwardButton.setEnabled(isDirectorySelected);
         }
     }
-    private void performSearch() {
+
+    //Peforms search of different fields, then allows the table to be filtered accordingly by finding
+    //intersection between matches
+    //
+    private void performSearch()
+    {
         String searchTerm = searchField.getInputText().trim().toLowerCase();
         String suffixTerm = suffixField.getInputText().trim().toLowerCase();
 
@@ -234,27 +238,20 @@ public class FilePanel extends JPanel implements ActionListener
         List<DirectoryContent> allFiles = DiskReader.listDirectoryContents(currDirLabel.getText());
         List<DirectoryContent> filteredFiles = new ArrayList<>();
 
-        for (DirectoryContent file : allFiles) {
+        for (DirectoryContent file : allFiles)
+        {
             String fileName = file.getName().toLowerCase();
 
             // Check if file name matches the search term and suffix
             boolean matchesSearch = searchTerm.isEmpty() || fileName.contains(searchTerm);
             boolean matchesSuffix = suffixTerm.isEmpty() || fileName.endsWith(suffixTerm);
 
-            if (matchesSearch && matchesSuffix) {
+            if (matchesSearch && matchesSuffix)
+            {
                 filteredFiles.add(file);
             }
         }
-
         // Update the table with filtered results
         fileTable.updateTable(filteredFiles);
-    }
-
-    // Method to navigate to a new directory (called from FileTable on double-click, now removed)
-    // Retained for potential future use
-    public void navigateToDirectory(String directory)
-    {
-        addToHistory(directory);
-        loadDirectory(directory);
     }
 }

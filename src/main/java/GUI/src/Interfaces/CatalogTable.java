@@ -2,26 +2,14 @@
 //
 // This will create the table to display all the files within the catalog
 //
-// Created by Lalida Krairit, 2ุ October 2024
+// Created by Lalida Krairit, 2 October 2024
 //
 
 package GUI.src.Interfaces;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import GUI.src.Interfaces.MainFrame;
-import utilities.*;
-import java.sql.Connection;
+import java.awt.event.*;
 import java.util.List;
 import utilities.FileRecord;
 import utilities.FileCatalog;
@@ -30,34 +18,22 @@ public class CatalogTable
 {
     JTable table; //reference to the table that contains the files in catalog
     private JScrollPane scrollPane; //reference to the scrollPane attached to the table so it can scroll if overflowed
-    MainFrame mainFrame;
+    MainFrame mainFrame; //reference to mainFrame
+    private ViewMorePanel currentViewMorePanel; // Current ViewMorePanel being displayed
+    Runnable clearLowerPanel; //clear lower panel upon updation
 
-    //Arguments: passing the mainFrame
-    public CatalogTable(MainFrame mainFrame, JComponent parentComponent)
+    //Arguments: passing the mainFrame, parentComponent which is the catalog panel
+    public CatalogTable(MainFrame mainFrame, JComponent parentComponent, Runnable clearLowerPanel)
     {
-
         this.mainFrame = mainFrame;
-        //TO DO: convert from dummy data to real data
-        //TO DO: be able to convert strings to integer and date format
-        //TO DO: if directory, ext. and size must be empty
+        this.clearLowerPanel = clearLowerPanel;
 
         String[] columns = {"Name", "Ext.", "Last Edited Date", "Annotations", "View More"};
-
-        List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
-        Object[][] data = new Object[catalogRecords.size()][5];
-        for (int i = 0; i < catalogRecords.size(); i++)
-        {
-            FileRecord record = catalogRecords.get(i);
-            data[i][0] = record.getFileName();
-            data[i][1] = record.getFileType();
-            data[i][2] = record.getModificationDate();
-            data[i][3] = record.getAnnotation();
-            data[i][4] = "View More";
-        }
+        Object[][] catalogRecords = getTableData(FileCatalog.getAllFiles());
 
         //---------------------Table----------------------
 
-        table = new JTable(data, columns);
+        table = new JTable(catalogRecords, columns);
         table.setRowHeight(20);
         table.setDefaultEditor(Object.class, null); //make it not editable
         table.setFillsViewportHeight(true); // Ensures the table occupies full height in the viewport
@@ -65,14 +41,9 @@ public class CatalogTable
         table.setFocusable(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        addViewMoreButton();
         setColumnWidths();
         addIcon();
-
-        //----------------View More Button-----------------
-
-        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
-        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
-        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
 
         //------------------Table Header-------------------
 
@@ -119,52 +90,21 @@ public class CatalogTable
         });
     }
 
-    //
-    // Getter of scrollpane so that it can be managed my parent class
-    // Returns:
-    //      scrollPane: scrollpane for the table
-    //
-    public JScrollPane getScrollPane()
-    {
-        return scrollPane;
-    }
+    //----------------Private Function---------------
 
-    //
-    // check if row is selected or not
-    // Returns:
-    //      true if row is selected and false if it isn't
-    //
-    public boolean isRowSelected()
-    {
-        return table.getSelectedRow() != -1;
-    }
-
-    //
-    // set the widths of the columns
+    // Set the widths of the columns
     //
     private void setColumnWidths()
     {
-        TableColumn nameColumn = table.getColumnModel().getColumn(0);
-        nameColumn.setPreferredWidth(150);
-
-        TableColumn extColumn = table.getColumnModel().getColumn(1);
-        extColumn.setPreferredWidth(5);
-
-        TableColumn dateColumn = table.getColumnModel().getColumn(2);
-        dateColumn.setPreferredWidth(50);
-
-        TableColumn annotationColumn = table.getColumnModel().getColumn(3);
-        annotationColumn.setPreferredWidth(300);
-
-        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
-        viewMoreColumn.setPreferredWidth(30);
+        table.getColumnModel().getColumn(0).setPreferredWidth(150);
+        table.getColumnModel().getColumn(1).setPreferredWidth(5);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(3).setPreferredWidth(250);
+        table.getColumnModel().getColumn(4).setPreferredWidth(30);
     }
 
-    //
-    // Add an icon to the front to tell if it is a file or a directory. It also renders the
-    // focus selection similar to changeFocusColor()
-    // Returns:
-    //      nameCell: the first column of the field that the icon is added to
+
+    // Add an icon to the front to tell if it is a file or a directory.
     //
     private void addIcon()
     {
@@ -187,7 +127,51 @@ public class CatalogTable
         table.getColumnModel().getColumn(0).setCellRenderer(iconRenderer);
     }
 
+    // Populates the table data from the list of catalog records
+    // Returns table data
     //
+    private Object[][] getTableData(List<FileRecord> records)
+    {
+        Object[][] data = new Object[records.size()][5];
+        for (int i = 0; i < records.size(); i++)
+        {
+            FileRecord record = records.get(i);
+            data[i][0] = record.getFileName();
+            data[i][1] = record.getFileType();
+            data[i][2] = record.getModificationDate();
+            data[i][3] = record.getAnnotation();
+            data[i][4] = "View More";
+        }
+        return data;
+    }
+
+    //Adds the view more button and renders it
+    //
+    private void addViewMoreButton()
+    {
+        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
+        viewMoreColumn.setCellRenderer(new ViewButtonRenderer());
+        viewMoreColumn.setCellEditor(new ViewButtonEditor(new JButton("View More"), this, clearLowerPanel));
+    }
+
+    //----------------Public Function---------------
+
+    // Getter of scrollpane so that it can be managed my parent class
+    // Returns scrollpane
+    //
+    public JScrollPane getScrollPane()
+    {
+        return scrollPane;
+    }
+
+    // Check if row is selected or not
+    // Returns true if row is selected and false if it isn't
+    //
+    public boolean isRowSelected()
+    {
+        return table.getSelectedRow() != -1;
+    }
+
     // Get file information at specific index
     // Arguments:
     //      -rowIndex: index of row that is selected
@@ -199,17 +183,15 @@ public class CatalogTable
     }
 
     // Gets the catalog table that has been instantiated in this class
-    // Return:
-    //      -table - the table
+    // Returns table
+    //
     public JTable getTable()
     {
         return table;
     }
 
-    //
-    // get file name or directory name from selected row
-    // Returns:
-    //      name value, otherwise null if row is not selected
+    // Get file name or directory name from selected row
+    // Returns path name value, otherwise null if row is not selected
     //
     public String getSelectedPathName()
     {
@@ -221,35 +203,28 @@ public class CatalogTable
         return null;
     }
 
-    //refresh table
+    // Refreshes table everytime file is added to catalog, file is deleted, or annotations are edited
+    //
     public void refreshTable()
     {
-        List<FileRecord> catalogRecords = FileCatalog.getAllFiles();
-        Object[][] data = new Object[catalogRecords.size()][5];
-        for (int i = 0; i < catalogRecords.size(); i++) {
-            FileRecord record = catalogRecords.get(i);
-            data[i][0] = record.getFileName();
-            data[i][1] = record.getFileType();
-            data[i][2] = record.getModificationDate();
-            data[i][3] = record.getAnnotation();
-            data[i][4] = "View More";
-        }
+        Object[][] catalogRecords = getTableData(FileCatalog.getAllFiles());
+        table.setModel(new DefaultTableModel(catalogRecords, new String[]{"Name", "Ext.", "Last Edited Date", "Annotations", "View More"}));
 
-        table.setModel(new DefaultTableModel(data, new String[]{"Name", "Ext.", "Last Edited Date", "Annotations", "View More"}));
-        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
-        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
-        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
-
-        table.revalidate();
-        table.repaint();
+        addViewMoreButton();
         setColumnWidths();
         addIcon();
+        table.revalidate();
+        table.repaint();
     }
-    public void updateTable(List<FileRecord> filteredRecords)
+
+    // Update catalog table so it filters based on the search
+    //
+    public void updateFilteredTable(List<FileRecord> filteredRecords)
     {
 
         Object[][] data = new Object[filteredRecords.size()][5];
-        for (int i = 0; i < filteredRecords.size(); i++) {
+        for (int i = 0; i < filteredRecords.size(); i++)
+        {
             FileRecord record = filteredRecords.get(i);
             data[i][0] = record.getFileName();
             data[i][1] = record.getFileType();
@@ -259,14 +234,95 @@ public class CatalogTable
         }
 
         table.setModel(new DefaultTableModel(data, new String[]{"Name", "Ext.", "Last Edited Date", "Annotations", "View More"}));
-        TableColumn viewMoreColumn = table.getColumnModel().getColumn(4);
-        viewMoreColumn.setCellRenderer(new ViewMoreButton.ViewButtonRenderer());
-        viewMoreColumn.setCellEditor(new ViewMoreButton.ViewButtonEditor(new JButton("View More"), mainFrame, this));
 
-        table.revalidate();
-        table.repaint();
+        addViewMoreButton();
         setColumnWidths();
         addIcon();
+        table.revalidate();
+        table.repaint();
+    }
+
+    //Sets up the view more button render
+    private static class ViewButtonRenderer extends JButton implements TableCellRenderer
+    {
+        public ViewButtonRenderer()
+        {
+            setOpaque(true);
+        }
+
+        //get rendered component and set its text
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+        {
+            setText(value == null ? "" : value.toString());
+            return this;
+        }
+    }
+
+    // Handles the "View More" button click events
+    private class ViewButtonEditor extends DefaultCellEditor
+    {
+        private JButton button; //reference to view more button
+        private String label; //label for the button
+        private CatalogTable catalogTable; //reference to the catalog table
+        private Runnable clearLowerPanel; //reference to clearLowerPanel
+
+        public ViewButtonEditor(JButton button, CatalogTable catalogTable, Runnable clearLowerPanel)
+        {
+            super(new JCheckBox());
+            this.button = button;
+            this.catalogTable = catalogTable;
+            this.clearLowerPanel = clearLowerPanel;
+            this.button.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+
+            this.button.addActionListener(new ActionListener()
+            {
+                //when button is clicked, it opens view more display
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    openViewMoreDisplay();
+                    fireEditingStopped();
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column)
+        {
+            label = value == null ? "" : value.toString();
+            button.setText(label);
+            return button;
+        }
+
+        //Returns value from cell
+        @Override
+        public Object getCellEditorValue()
+        {
+            return label;
+        }
+
+        //----------------Public Function---------------
+
+        //Opens the view more panel on the lower panel
+        private void openViewMoreDisplay()
+        {
+            int selectedRow = table.getEditingRow();
+            if (selectedRow != -1)
+            {
+                FileRecord fileInfo = catalogTable.getFileAt(selectedRow);
+                System.out.println("Selected Row: " + selectedRow);
+                System.out.println("File Info: " + fileInfo.getFileName());
+                System.out.println("Creating new ViewMorePanel");
+                // Create a new panel and display it
+                currentViewMorePanel = new ViewMorePanel(
+                        fileInfo,
+                        catalogTable::refreshTable,
+                        () -> clearLowerPanel.run()
+                );
+                catalogTable.mainFrame.displayPanel(currentViewMorePanel);
+            }
+        }
     }
 }
 

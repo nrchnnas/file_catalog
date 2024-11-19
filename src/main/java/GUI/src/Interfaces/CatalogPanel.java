@@ -6,17 +6,14 @@
 //
 
 package GUI.src.Interfaces;
-import utilities.DirectoryContent;
 import utilities.FileCatalog;
 import utilities.FileRecord;
-
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.List;
-
 
 public class CatalogPanel extends JPanel
 {
@@ -25,10 +22,12 @@ public class CatalogPanel extends JPanel
     MyTextField fileTypeField;  //text field for searching files in catalog using file type
     MyTextField dateField;  //text field for searching files in catalog using date
     private final transient CatalogTable catalogTable; //the table containing files in catalog
+    Runnable clearLowerPanel; //reference to the runnable to clear lower panel
 
-    CatalogPanel(MainFrame mainFrame)
+    CatalogPanel(MainFrame mainFrame, Runnable clearLowerPanel)
     {
 
+        this.clearLowerPanel = clearLowerPanel;
         Color LIGHT_GRAY = Color.decode("#E8E8E8");
         ImageIcon SEARCH_ICON = new ImageIcon("src/main/java/assets/Search.png");
 
@@ -104,7 +103,7 @@ public class CatalogPanel extends JPanel
 
         //---------------------Table Panel-----------------------
 
-        catalogTable = new CatalogTable(mainFrame, this);
+        catalogTable = new CatalogTable(mainFrame, this, clearLowerPanel);
         JScrollPane tableScrollPane = catalogTable.getScrollPane();
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         tableScrollPane.setBackground(Color.WHITE);
@@ -129,7 +128,12 @@ public class CatalogPanel extends JPanel
         this.add(upperPanel, BorderLayout.NORTH);
         this.add(lowerPanel, BorderLayout.CENTER);
     }
-    private class SearchListener implements DocumentListener {
+
+
+    //Adds document Listener to table so that it can be updated based on search
+    //
+    private class SearchListener implements DocumentListener
+    {
         @Override
         public void insertUpdate(DocumentEvent e) { performSearch(); }
         @Override
@@ -138,14 +142,21 @@ public class CatalogPanel extends JPanel
         public void changedUpdate(DocumentEvent e) { performSearch(); }
     }
 
-    private void performSearch() {
+    //----------------Private Function---------------
+
+    //Peforms search of different fields, then allows the table to be filtered accordingly by finding
+    //intersection between matches
+    //
+    private void performSearch()
+    {
         String searchTerm = searchField.getInputText().trim().toLowerCase();
         String fileType = fileTypeField.getInputText().trim().toLowerCase();
         String annotation = annotationField.getInputText().trim().toLowerCase();
         String date = dateField.getInputText().trim().toLowerCase();
         List<FileRecord> allFiles = FileCatalog.getAllFiles();
         List<FileRecord> filteredFiles = new ArrayList<>();
-        for (FileRecord file : allFiles) {
+        for (FileRecord file : allFiles)
+        {
             String fileName = file.getFileName().toLowerCase();
 
             boolean matchesSearch = searchTerm.isEmpty()|| fileName.contains(searchTerm);
@@ -153,17 +164,18 @@ public class CatalogPanel extends JPanel
             boolean matchesDate = date.isEmpty() || file.getModificationDate().contains(date);
             boolean matchesAnnotation = annotation.isEmpty() || (file.getAnnotation() != null && file.getAnnotation().toLowerCase().contains(annotation));
 
-            if (matchesSearch && matchesType && matchesDate && matchesAnnotation) {
+            if (matchesSearch && matchesType && matchesDate && matchesAnnotation)
+            {
                 filteredFiles.add(file);
             }
         }
-
-        catalogTable.updateTable(filteredFiles);
+        catalogTable.updateFilteredTable(filteredFiles);
     }
 
+    //----------------Public Function---------------
+
     // Gets the catalog table that has been instantiated in this class
-    // Return:
-    //      -catalogTable: catalog table
+    // Returns catalogTable
     public CatalogTable getCatalogTable()
     {
         return catalogTable;

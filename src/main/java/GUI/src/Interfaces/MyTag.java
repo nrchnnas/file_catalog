@@ -9,7 +9,6 @@ package GUI.src.Interfaces;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class MyTag extends JPanel
 {
     private JLabel iconLabel;    //Label to display the icon
@@ -43,6 +42,8 @@ public class MyTag extends JPanel
         add(tagContentPanel, BorderLayout.CENTER);
     }
 
+    //----------------Private Function---------------
+
     // Update the icon based on file or directory
     // Arguments:
     //      -isFile: boolean variable if it is a file or directory
@@ -58,6 +59,8 @@ public class MyTag extends JPanel
         }
         iconLabel.setIcon(icon);
     }
+
+    //----------------Public Function---------------
 
     // Updates the nameLabel
     // Arguments:

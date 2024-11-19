@@ -28,7 +28,7 @@ public class MainFrame extends JFrame implements ActionListener
     JPanel lowerPanel; //the lower panel of the frame
     FilePanel filePanel; //reference to the panel containing the file table
     CatalogPanel catalogPanel; //reference to the panel containing catalog table
-    private JPanel currentOpenPanel;
+    private JPanel currentOpenPanel; //tracks current open panel
 
     public MainFrame()
     {
@@ -94,7 +94,7 @@ public class MainFrame extends JFrame implements ActionListener
         GridBagConstraints gbc = new GridBagConstraints();
 
         filePanel = new FilePanel();
-        catalogPanel = new CatalogPanel(this);
+        catalogPanel = new CatalogPanel(this, this::clearLowerPanel);
         setupFileTableListener();
 
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e -> updateButtonStates());
@@ -173,7 +173,7 @@ public class MainFrame extends JFrame implements ActionListener
         // Adds the add annotation panel to lowerPanel if row is selected
         } else if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
-            String pathName = filePanel.getFileTable().getSelectedFilePath(); // Get selected file path
+            String pathName = filePanel.getFileTable().getSelectedPathName(); // Get selected file path
             AddToCatalogPanel addPanel = new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable());
             displayPanel(addPanel);
             currentOpenPanel = addPanel;
@@ -254,7 +254,6 @@ public class MainFrame extends JFrame implements ActionListener
             displayPanel(compareFilePanelHolder[0]);
         }
 
-
         else if (e.getSource() == validateButton)
         {
             //TO DO: implement validate function and update the message
@@ -263,28 +262,10 @@ public class MainFrame extends JFrame implements ActionListener
         }
     }
 
-    //Displays panels after clicking a specific button and repainting lowerPanel
-    //Arguments:
-    //      -panel: panel to be displayed
-    public void displayPanel(JPanel panel)
-    {
-        lowerPanel.removeAll();
-        lowerPanel.add(panel);
-        lowerPanel.revalidate();
-        lowerPanel.repaint();
-        currentOpenPanel = panel;
-    }
-
-    //Clears components within lower panel
-    public void clearLowerPanel()
-    {
-        lowerPanel.removeAll();
-        lowerPanel.revalidate();
-        lowerPanel.repaint();
-        currentOpenPanel = null;
-    }
+    //----------------Private Function---------------
 
     //Update button states based on row selection of each tables
+    //
     private void updateButtonStates()
     {
         boolean filePanelRowSel = filePanel.getFileTable().isRowSelected(); //boolean if row in file table is selected or not
@@ -308,6 +289,7 @@ public class MainFrame extends JFrame implements ActionListener
 
 
     // Add a ListSelectionListener to the FilePanel’s file table
+    //
     private void setupFileTableListener()
     {
         filePanel.getFileTable().getTable().getSelectionModel().addListSelectionListener(e ->
@@ -315,17 +297,17 @@ public class MainFrame extends JFrame implements ActionListener
             // Check if the currently open panel is an instance of AddToCatalogPanel
             if (currentOpenPanel instanceof AddToCatalogPanel && filePanel.getFileTable().isRowSelected())
             {
-                String newPathName = filePanel.getFileTable().getSelectedFilePath(); // Get new selected file path
+                String newPathName = filePanel.getFileTable().getSelectedPathName(); // Get new selected file path
                 ((AddToCatalogPanel) currentOpenPanel).updateFilePath(newPathName); // Update AddToCatalogPanel path
             }
         });
     }
 
     // Method to open the selected file in the default application
+    //
     private void openSelectedFile()
     {
-        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
-        String filePath = filePanel.getFileTable().getSelectedFilePath(); // Get the file path
+        String filePath = filePanel.getFileTable().getSelectedPathName(); // Get the file path
 
         if (filePath != null)
         {
@@ -357,6 +339,30 @@ public class MainFrame extends JFrame implements ActionListener
         {
             JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    //----------------Public Function---------------
+
+    //Displays panels after clicking a specific button and repainting lowerPanel
+    //Arguments:
+    //      -panel: panel to be displayed
+    public void displayPanel(JPanel panel)
+    {
+        lowerPanel.removeAll();
+        lowerPanel.add(panel);
+        lowerPanel.revalidate();
+        lowerPanel.repaint();
+        currentOpenPanel = panel;
+    }
+
+    //Clears components within lower panel
+    //
+    public void clearLowerPanel()
+    {
+        lowerPanel.removeAll();
+        lowerPanel.revalidate();
+        lowerPanel.repaint();
+        currentOpenPanel = null;
     }
 }
 

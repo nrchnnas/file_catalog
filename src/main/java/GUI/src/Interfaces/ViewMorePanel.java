@@ -10,7 +10,6 @@
 package GUI.src.Interfaces;
 import utilities.FileCatalog;
 import utilities.FileRecord;
-
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
@@ -144,7 +143,7 @@ public class ViewMorePanel extends JPanel
         }
     }
 
-    //Done action which will save annotation if there are any new annotations
+    //Save action which will save annotation if there are any new annotations
     private class DoneAction implements ActionListener
     {
         @Override
@@ -154,7 +153,9 @@ public class ViewMorePanel extends JPanel
             annotationArea.setEditable(false);
             annotationArea.setBackground(Color.LIGHT_GRAY);
             FileCatalog.updateAnnotation(fileInfo.getId(), updatedAnnotation);
+            clearLowerPanel.run();
             refreshCatalog.run();
         }
     }
+
 }

@@ -8,14 +8,11 @@
 package GUI.src.Interfaces;
 import utilities.DirectoryContent;
 import utilities.DiskReader;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -78,7 +75,10 @@ public class FileTable {
         });
     }
 
+    //----------------Private Function---------------
+
     // Creates the data array for the table from a list of DirectoryContent
+    //
     private Object[][] createTableData(List<DirectoryContent> records)
     {
         Object[][] data = new Object[records.size()][4];
@@ -93,90 +93,16 @@ public class FileTable {
         return data;
     }
 
-    //
-    // Getter of scrollpane so that it can be managed by parent class
-    // Returns:
-    //      scrollPane: scrollpane for the table
-    //
-    public JScrollPane getScrollPane()
-    {
-        return scrollPane;
-    }
-
-    //
-    // Check if row is selected or not
-    // Returns:
-    //      true if row is selected and false if it isn't
-    //
-    public boolean isRowSelected()
-    {
-        return table.getSelectedRow() != -1;
-    }
-
-    // TO DO: might have to get more than file name.
-
-    //
-    // Get file name or directory name from selected row
-    // Returns:
-    //      name value, otherwise null if row is not selected
-    //
-    public String getSelectedPathName()
-    {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1)
-        {
-            return table.getValueAt(selectedRow, 0).toString();
-        }
-        return null;
-    }
-
-    // Get the selected directory's full path
-    // Returns:
-    //      path if selected row is a directory, otherwise null
-    //
-    public String getSelectedDirectoryPath()
-    {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1 && fileRecords.get(selectedRow).isDirectory())
-        {
-            return fileRecords.get(selectedRow).getPath();
-        }
-        return null;
-    }
-
-    //
-    // Check if the selected row is a directory
-    // Returns:
-    //      true if selected row is a directory, false otherwise
-    //
-    public boolean isSelectedDirectory()
-    {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            return fileRecords.get(selectedRow).isDirectory();
-        }
-        return false;
-    }
-
-    //
     // Set the widths of the columns
     //
     private void setColumnWidths()
     {
-        TableColumn nameColumn = table.getColumnModel().getColumn(0);
-        nameColumn.setPreferredWidth(200);
-
-        TableColumn extColumn = table.getColumnModel().getColumn(1);
-        extColumn.setPreferredWidth(50);
-
-        TableColumn sizeColumn = table.getColumnModel().getColumn(2);
-        sizeColumn.setPreferredWidth(100);
-
-        TableColumn dateColumn = table.getColumnModel().getColumn(3);
-        dateColumn.setPreferredWidth(200);
+        table.getColumnModel().getColumn(0).setPreferredWidth(200);
+        table.getColumnModel().getColumn(1).setPreferredWidth(50);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(3).setPreferredWidth(200);
     }
 
-    //
     // Add an icon to the front to tell if it is a file or a directory.
     //
     private void addIcon()
@@ -210,6 +136,47 @@ public class FileTable {
         table.getColumnModel().getColumn(0).setCellRenderer(iconRenderer);
     }
 
+    // Format the size
+    //
+    private String formatSize(long size)
+    {
+        if (size < 1024) return size + " B";
+        int exp = (int) (Math.log(size) / Math.log(1024));
+        char unit = "KMGTPE".charAt(exp - 1); // K, M, G, T, etc.
+        return String.format("%.1f %sB", size / Math.pow(1024, exp), unit);
+    }
+
+    //----------------Public Function---------------
+
+    // Getter of scrollpane so that it can be managed by parent class
+    // Returns scrollpane for the table
+    //
+    public JScrollPane getScrollPane()
+    {
+        return scrollPane;
+    }
+
+    // Check if row is selected or not
+    // Returns true if row is selected and false if it isn't
+    //
+    public boolean isRowSelected()
+    {
+        return table.getSelectedRow() != -1;
+    }
+
+
+    // Check if the selected row is a directory
+    // Returns true if selected row is a directory, false otherwise
+    //
+    public boolean isSelectedDirectory()
+    {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            return fileRecords.get(selectedRow).isDirectory();
+        }
+        return false;
+    }
+
     // Gets the file table that has been instantiated in this class
     // Return:
     //      -table - the table
@@ -220,7 +187,8 @@ public class FileTable {
 
     // Retrieves the full path of the selected file in the table
     // Returns path if found, otherwise null
-    public String getSelectedFilePath()
+    //
+    public String getSelectedPathName()
     {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1)
@@ -230,18 +198,23 @@ public class FileTable {
         return null;
     }
 
-    // Format the size
-    private String formatSize(long size)
+    // Get the selected directory's full path
+    // Returns path if selected row is a directory, otherwise null
+    //
+    public String getSelectedDirectoryPath()
     {
-        if (size < 1024) return size + " B";
-        int exp = (int) (Math.log(size) / Math.log(1024));
-        char unit = "KMGTPE".charAt(exp - 1); // K, M, G, T, etc.
-        return String.format("%.1f %sB", size / Math.pow(1024, exp), unit);
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1 && fileRecords.get(selectedRow).isDirectory())
+        {
+            return fileRecords.get(selectedRow).getPath();
+        }
+        return null;
     }
 
     // Updates the table with new data
     // Arguments:
     //      newRecords - the new list of DirectoryContent objects to display
+    //
     public void updateTable(List<DirectoryContent> newRecords)
     {
         this.fileRecords = newRecords; // Update the internal list
@@ -256,11 +229,5 @@ public class FileTable {
         table.setModel(model); // Set the new model
         setColumnWidths();
         addIcon();
-    }
-
-    // Getter for fileRecords to be used in listeners
-    public List<DirectoryContent> getFileRecords()
-    {
-        return fileRecords;
     }
 }

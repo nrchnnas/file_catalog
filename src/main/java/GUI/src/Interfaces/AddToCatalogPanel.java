@@ -8,19 +8,13 @@
 
 package GUI.src.Interfaces;
 import utilities.DirectoryContent;
-import utilities.DiskReader;
 import utilities.FileCatalog;
 import utilities.MainUtilities;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
 
 public class AddToCatalogPanel extends JPanel implements ActionListener
 {
@@ -48,7 +42,6 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
         addAnnotationField.addFocusListener(new FocusListener()
         {
             @Override
-            //
             // Removes placeholder text when the user clicks on the text field
             // and replaces with new text and change color
             // Arguments:
@@ -63,7 +56,6 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
                 }
             }
 
-            //
             // Restores placeholder text when the user clicks off the text field
             // and change color back to original
             // Arguments:
@@ -82,7 +74,6 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
 
         add(addAnnotationField);
 
-        //TO DO: when add button clicked, add to catalog + add annotation
         addButton = new JButton("Add");
         addButton.addActionListener(this);
         add(addButton);
@@ -96,9 +87,9 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        // Adds the selected file to catalog when add button is pressed, along with annotation
         if (e.getSource() == addButton)
         {
-            System.out.println("Selected file path: " + pathName);
 
             File selectedFile = new File(pathName);
             DirectoryContent selectedRecord = new DirectoryContent(
@@ -109,8 +100,10 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
                     selectedFile.length(),
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(selectedFile.lastModified())
             );
+            //check if it is a directory
             if (!selectedRecord.isDirectory())
             {
+                //check if its already in directory (duplicate)
                 if (FileCatalog.isFileInCatalog(selectedFile.getPath()))
                 {
                     JOptionPane.showMessageDialog(
@@ -122,7 +115,6 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
                     return; // Do not proceed with adding the file
                 }
 
-                // Proceed to add the file if it's not a duplicate
                 String annotation = addAnnotationField.getText();
                 if (annotation.isEmpty() || annotation.equals(PLACEHOLDER_TEXT))
                 {
@@ -142,6 +134,9 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
         }
     }
 
+    //----------------Private Function---------------
+    //Gets file extension/file type
+    //Returns null if no dotIndex (it's a directory), otherwise return file ext.
     private String getFileExtension(File file)
     {
         String fileName = file.getName();
@@ -149,12 +144,12 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
+    //----------------Public Function---------------
+    //Updates file path everytime user clicks on new row
     public void updateFilePath(String newPathName)
     {
         this.pathName = newPathName;
-        System.out.println("Updated selected file path: " + pathName);
     }
-
 }
 
 

@@ -40,7 +40,6 @@ public class MyTextField extends JTextField implements FocusListener
         }
     }
 
-    //
     // Restores placeholder text when the user clicks off the text field
     // Arguments:
     //      e: keyboard event
@@ -54,9 +53,14 @@ public class MyTextField extends JTextField implements FocusListener
             this.setForeground(Color.GRAY);
         }
     }
-    public String getInputText() {
+
+    //----------------Public Function---------------
+
+    //Gets input text inside text field
+    //Returns empty string if text is same as placeholder, otherwise the string
+    public String getInputText()
+    {
         String text = super.getText();
-        // If text is the same as placeholder, return empty string
         return text.equals(placeholder) ? "" : text;
     }
 }
