@@ -24,7 +24,7 @@ public class ViewMorePanel extends JPanel
     private JTextArea annotationArea; //where annotations will be shown
     private FileRecord fileInfo; //info about file as a struct
     private Runnable refreshCatalog; //refresh runnable
-    private Runnable clearLowerPanel;
+    private Runnable clearLowerPanel; //clear lower panel of mainFrame
 
     public ViewMorePanel(FileRecord fileInfo, Runnable refreshCatalog, Runnable clearLowerPanel)
     {

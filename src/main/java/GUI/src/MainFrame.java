@@ -20,7 +20,6 @@ public class MainFrame extends JFrame implements ActionListener
 {
 
     JButton openFileButton; //open file button
-    JButton editFileNameButton; //edit file name button
     JButton validateButton; //validate catalog button
     JButton addButton; //add to catalog button
     JButton moveFileButton; //move source files button
@@ -36,7 +35,6 @@ public class MainFrame extends JFrame implements ActionListener
         Color darkGray = Color.decode("#CFCFCF");
 
         ImageIcon openIcon = ImageLoader.loadImage("/assets/Open.png");
-        ImageIcon editIcon = ImageLoader.loadImage("/assets/Edit.png");
         ImageIcon validateIcon = ImageLoader.loadImage("/assets/Refresh.png");
         ImageIcon addIcon = ImageLoader.loadImage("/assets/Add.png");
         ImageIcon moveIcon = ImageLoader.loadImage("/assets/Move.png");
@@ -46,29 +44,19 @@ public class MainFrame extends JFrame implements ActionListener
         openFileButton = new JButton(openIcon);
         openFileButton.addActionListener(this);
         openFileButton.setText("Open File");
-        openFileButton.addActionListener(this);
         openFileButton.setEnabled(false);
 
-        editFileNameButton = new JButton(editIcon);
-        editFileNameButton.addActionListener(this);
-        editFileNameButton.setText("Edit File name");
-        editFileNameButton.addActionListener(this);
-        editFileNameButton.setEnabled(false);
-
         addButton = new JButton(addIcon);
-        addButton.setFocusable(false);
         addButton.setText("Add to catalog");
         addButton.addActionListener(this);
         addButton.setEnabled(false);
 
         moveFileButton = new JButton(moveIcon);
-        moveFileButton.setFocusable(false);
         moveFileButton.setText("Move Source files");
         moveFileButton.addActionListener(this);
         moveFileButton.setEnabled(false);
 
         validateButton = new JButton(validateIcon);
-        validateButton.setFocusable(false);
         validateButton.setText("Validate Catalog");
         validateButton.addActionListener(this);
 
@@ -77,7 +65,6 @@ public class MainFrame extends JFrame implements ActionListener
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         upperPanel.add(openFileButton);
-        upperPanel.add(editFileNameButton);
         upperPanel.add(addButton);
         upperPanel.add(moveFileButton);
         upperPanel.add(validateButton);
@@ -147,68 +134,16 @@ public class MainFrame extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        // Opens selected file
         if (e.getSource() == openFileButton)
         {
             openSelectedFile();
-        // Edits selected file name
-        } else if (e.getSource() == editFileNameButton)
-        {
-            int selectedRow = filePanel.getFileTable().getTable().getSelectedRow();
-            String currentFileName = (String) filePanel.getFileTable().getTable().getValueAt(selectedRow, 0);
-            String newFileName = JOptionPane.showInputDialog(this, "Enter new file name:", currentFileName);
-            if (newFileName != null && !newFileName.trim().isEmpty())
-            {
-                filePanel.getFileTable().getTable().setValueAt(newFileName, selectedRow, 0);
-            }
-
-            //TO DO: change file name in actual directory
-
         // Adds the add annotation panel to lowerPanel if row is selected. If it is either directory, or already in the catalog, there is an error
         } else if (e.getSource() == addButton && filePanel.getFileTable().isRowSelected())
         {
-            String pathName = filePanel.getFileTable().getSelectedPathName(); // Get selected file path
-            File selectedFile = new File(pathName);
-            if (!selectedFile.isDirectory())
-            {
-                if (!FileCatalog.isFileInCatalog(selectedFile.getPath()))
-                {
-                    AddToCatalogPanel addPanel = new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable(), this);
-                    displayPanel(addPanel);
-                    currentOpenPanel = addPanel;
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(this, "This file is already in the catalog.");
-                }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this, "Cannot add a directory to the catalog");
-            }
-
-
+            addFileToCatalog();
         // Adds the move file panel to lowerPanel if row is selected
         } else if (e.getSource() == moveFileButton && filePanel.getFileTable().isRowSelected()) {
-            // Wrap MoveFilePanel in a final array to allow usage within the lambda
-            final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
-            //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory, 3. table reference
-            movePanelHolder[0] = new MoveFilePanel(
-                    //1
-                    event -> clearLowerPanel(),
-                    //2
-                    () ->
-                    {
-                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
-                        if (selectedRow != -1) {
-                            String newDirPath = filePanel.getFileTable().getSelectedPathName(); //get name of directory
-                            movePanelHolder[0].setNewDirectory(newDirPath); // Update MoveFilePanel with the selected directory
-                        }
-                    },
-                    //3
-                    filePanel.getFileTable()
-            );
-            displayPanel(movePanelHolder[0]);
+            handleMoveFile();
         }
     }
 
@@ -223,19 +158,16 @@ public class MainFrame extends JFrame implements ActionListener
         boolean bothSel = filePanelRowSel && catPanelRowSel; //boolean when both are selected
 
         openFileButton.setEnabled(filePanelRowSel);
-        editFileNameButton.setEnabled(filePanelRowSel);
         addButton.setEnabled(filePanelRowSel);
         moveFileButton.setEnabled(filePanelRowSel);
 
         if (bothSel)
         {
             openFileButton.setEnabled(false);
-            editFileNameButton.setEnabled(false);
             addButton.setEnabled(false);
             moveFileButton.setEnabled(false);
         }
     }
-
 
     // Add a ListSelectionListener to the FilePanel’s file table
     //
@@ -252,7 +184,7 @@ public class MainFrame extends JFrame implements ActionListener
         });
     }
 
-    // Method to open the selected file in the default application
+    // Method to open the selected file in the default application and handling errors
     //
     private void openSelectedFile()
     {
@@ -288,6 +220,73 @@ public class MainFrame extends JFrame implements ActionListener
         {
             JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    // Method to add file to catalog and handle checking of whether its a directory or duplicate
+    //
+    private void addFileToCatalog()
+    {
+        String pathName = filePanel.getFileTable().getSelectedPathName(); // Get selected file path
+        File selectedFile = new File(pathName);
+        if (!selectedFile.isDirectory())
+        {
+            if (!FileCatalog.isFileInCatalog(selectedFile.getPath()))
+            {
+                AddToCatalogPanel addPanel = new AddToCatalogPanel(pathName, event -> clearLowerPanel(), () -> catalogPanel.getCatalogTable().refreshTable(), this);
+                displayPanel(addPanel);
+                currentOpenPanel = addPanel;
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "This file is already in the catalog.");
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Cannot add a directory to the catalog");
+        }
+    }
+
+    // Method to handle file relocation
+    //
+    private void handleMoveFile()
+    {
+        // Wrap MoveFilePanel in a final array to allow usage within the lambda
+        final MoveFilePanel[] movePanelHolder = new MoveFilePanel[1];
+        String pathName = filePanel.getFileTable().getSelectedPathName();
+        File selectedFile = new File(pathName);
+        if (!selectedFile.isDirectory())
+        {
+            //MoveFilePanel arguments: 1. closeListener/event, 2. Runnable action for selecting a new directory,
+            // 3. path name, 4. table reference, 5. mainFrame reference, 6. clear lower panel
+            movePanelHolder[0] = new MoveFilePanel(
+                    //1
+                    event -> clearLowerPanel(),
+                    //2
+                    () ->
+                    {
+                        int selectedRow = filePanel.getFileTable().getTable().getSelectedRow(); //get row
+                        if (selectedRow != -1)
+                        {
+                            String path = filePanel.getFileTable().getSelectedPathName(); //get name of selected path name
+                            movePanelHolder[0].setNewDirectory(path);
+                        }
+                    },
+                    //3
+                    pathName,
+                    //4
+                    filePanel.getFileTable(),
+                    //5
+                    this,
+                    //6
+                    this::clearLowerPanel
+            );
+            displayPanel(movePanelHolder[0]);
+        } else
+        {
+            JOptionPane.showMessageDialog(this, "No file selected.", "Error", JOptionPane.WARNING_MESSAGE);
+        }
+
     }
 
     //----------------Public Function---------------

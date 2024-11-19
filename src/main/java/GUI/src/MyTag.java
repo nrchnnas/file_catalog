@@ -60,7 +60,6 @@ public class MyTag extends JPanel
         {
             iconLabel.setIcon(folderIcon);
         }
-        iconLabel.setIcon(null);
     }
 
     //----------------Public Function---------------
