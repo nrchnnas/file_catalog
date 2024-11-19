@@ -44,6 +44,14 @@
 
     <!-- Build Configuration -->
     <build>
+
+        <!-- Adding path to resources directory -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- Maven Compiler Plugin to specify Java version -->
             <plugin>

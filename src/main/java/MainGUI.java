@@ -7,7 +7,7 @@
 // Created by Lalida Krairit, 19 October 2024
 //
 
-import GUI.src.Interfaces.MainFrame;
+import GUI.src.MainFrame;
 public class MainGUI
 {
     public static void main(String[] args)
