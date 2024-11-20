@@ -1,0 +1,25 @@
+-------------------------------------------------------------------------------
+Test set: utilitiesTest.FileValidationTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.048 s <<< FAILURE! -- in utilitiesTest.FileValidationTest
+utilitiesTest.FileValidationTest.testValidateFileSizeMismatch -- Time elapsed: 0.040 s <<< ERROR!
+java.lang.NoSuchMethodError: 'boolean utilities.FileValidation.validateFile(java.lang.String, long, java.lang.String, java.nio.file.attribute.FileTime)'
+	at utilitiesTest.FileValidationTest.testValidateFileSizeMismatch(FileValidationTest.java:26)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+utilitiesTest.FileValidationTest.testValidateFileLastModifiedMismatch -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NoSuchMethodError: 'boolean utilities.FileValidation.validateFile(java.lang.String, long, java.lang.String, java.nio.file.attribute.FileTime)'
+	at utilitiesTest.FileValidationTest.testValidateFileLastModifiedMismatch(FileValidationTest.java:35)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+utilitiesTest.FileValidationTest.testValidateFileExistsAndMatchesAttributes -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.NoSuchMethodError: 'boolean utilities.FileValidation.validateFile(java.lang.String, long, java.lang.String, java.nio.file.attribute.FileTime)'
+	at utilitiesTest.FileValidationTest.testValidateFileExistsAndMatchesAttributes(FileValidationTest.java:18)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
