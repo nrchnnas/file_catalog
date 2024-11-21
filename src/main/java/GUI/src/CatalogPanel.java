@@ -163,9 +163,10 @@ public class CatalogPanel extends JPanel
         for (FileRecord file : allFiles)
         {
             String fileName = file.getFileName().toLowerCase();
+            String fileExtension = file.getFileType().toLowerCase();
 
             boolean matchesSearch = searchTerm.isEmpty()|| fileName.contains(searchTerm);
-            boolean matchesType = fileType.isEmpty() || fileName.contains(fileType);
+            boolean matchesType = fileType.isEmpty() || fileExtension.equals(fileType);
             boolean matchesDate = date.isEmpty() || file.getModificationDate().contains(date);
             boolean matchesAnnotation = annotation.isEmpty() || (file.getAnnotation() != null && file.getAnnotation().toLowerCase().contains(annotation));
 

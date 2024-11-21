@@ -240,10 +240,11 @@ public class FilePanel extends JPanel implements ActionListener
         for (DirectoryContent file : allFiles)
         {
             String fileName = file.getName().toLowerCase();
+            String fileExtension = file.getExtension().toLowerCase();
 
             // Check if file name matches the search term and suffix
             boolean matchesSearch = searchTerm.isEmpty() || fileName.contains(searchTerm);
-            boolean matchesSuffix = suffixTerm.isEmpty() || fileName.endsWith(suffixTerm);
+            boolean matchesSuffix = suffixTerm.isEmpty() || fileExtension.equals(suffixTerm);
 
             if (matchesSearch && matchesSuffix)
             {

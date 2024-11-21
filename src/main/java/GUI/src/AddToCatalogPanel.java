@@ -123,6 +123,8 @@ public class AddToCatalogPanel extends JPanel implements ActionListener
                         selectedRecord.getLastModified(),
                         selectedRecord.getExtension()
                 );
+                String name = selectedFile.getName();
+                JOptionPane.showMessageDialog(mainFrame, String.format("The file \"%s\" has been added to the catalog.", name));
                 refreshCatalog.run();
             } else
             {
