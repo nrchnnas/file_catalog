@@ -9,11 +9,15 @@
 
 import GUI.src.MainFrame;
 import utilities.FileCatalog;
+import utilities.CatalogSyncScheduler;
 
 public class MainGUI {
     public static void main(String[] args) {
         // Initialize database table before any database interaction
         FileCatalog.initializeCatalog();
+
+        // Start the catalog synchronization scheduler
+        CatalogSyncScheduler.startSyncScheduler();
 
         // Start your application logic
         System.out.println("Starting application...");
