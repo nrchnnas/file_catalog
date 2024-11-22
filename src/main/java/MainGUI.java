@@ -15,5 +15,7 @@ public class MainGUI
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);
     }
+
+
 }
 
