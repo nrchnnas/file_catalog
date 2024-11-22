@@ -2,6 +2,8 @@ package utilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,7 +24,7 @@ public class DatabaseUtils {
             ensureDatabaseExists();
 
             // Dynamically get the database path relative to the JAR location
-            String dbPath = new File(DB_FILE).getAbsolutePath();
+            String dbPath = getJarDirectory() + File.separator + DB_FILE;
             String url = "jdbc:sqlite:" + dbPath;
 
             logger.info("Connecting to database at: " + dbPath);
@@ -37,34 +39,44 @@ public class DatabaseUtils {
      * Ensures that the database file exists. Creates the database file and directories if needed.
      */
     private static void ensureDatabaseExists() {
-        File dbFile = new File(DB_FILE);
-
         try {
+            String dbPath = getJarDirectory() + File.separator + DB_FILE;
+            File dbFile = new File(dbPath);
+
             // Create the parent directories if they don't exist
             File parentDir = dbFile.getParentFile();
-            if (!parentDir.exists()) {
-                if (parentDir.mkdirs()) {
-                    logger.info("Created directories for database: " + parentDir.getAbsolutePath());
-                } else {
-                    logger.warning("Failed to create directories for database: " + parentDir.getAbsolutePath());
-                }
+            if (!parentDir.exists() && parentDir.mkdirs()) {
+                logger.info("Created directories for database: " + parentDir.getAbsolutePath());
             }
 
             // Create the database file if it doesn't exist
-            if (!dbFile.exists()) {
-                if (dbFile.createNewFile()) {
-                    logger.info("Created new database file: " + dbFile.getAbsolutePath());
-                } else {
-                    logger.warning("Failed to create database file: " + dbFile.getAbsolutePath());
-                }
-            } else {
-                logger.info("Database file already exists: " + dbFile.getAbsolutePath());
+            if (!dbFile.exists() && dbFile.createNewFile()) {
+                logger.info("Created new database file: " + dbFile.getAbsolutePath());
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to create database file or directories", e);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "An unexpected error occurred while ensuring the database exists", e);
+        }
+    }
+
+    /**
+     * Gets the directory of the running JAR file.
+     *
+     * @return The absolute path to the directory containing the JAR file.
+     */
+    private static String getJarDirectory() {
+        try {
+            return Paths.get(DatabaseUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+                    .getParent()
+                    .toString();
+        } catch (URISyntaxException e) {
+            logger.log(Level.WARNING, "Could not resolve JAR directory, using current working directory as fallback.", e);
+            return new File(".").getAbsolutePath();
         }
     }
 }
+
 
 //package utilities;
 //
