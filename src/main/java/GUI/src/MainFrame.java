@@ -7,6 +7,8 @@
 
 package GUI.src;
 import utilities.FileCatalog;
+import utilities.FileValidation;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,7 +69,7 @@ public class MainFrame extends JFrame implements ActionListener
         upperPanel.add(openFileButton);
         upperPanel.add(addButton);
         upperPanel.add(moveFileButton);
-        upperPanel.add(validateButton);
+//        upperPanel.add(validateButton);
 
         //----------------------Center Panel------------------------
 
