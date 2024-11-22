@@ -29,7 +29,7 @@ public class FileCatalog {
                 "annotation TEXT, " +
                 "modification_date TEXT, " +
                 "file_type TEXT, " +
-                "file_size INTEGER)"; // Added file_size column
+                "file_size INTEGER)";
         try (Connection conn = DatabaseUtils.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(createTable);
