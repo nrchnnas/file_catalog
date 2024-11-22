@@ -2,11 +2,13 @@
 
 The File Catalog is a desktop application designed for developers and users to efficiently organize, annotate, and manage source files. It provides functionality to search for files by name, language suffix, or annotations, view file contents, move files to new locations, and validate the integrity of the catalog against changes on the disk.
 
-by 
+## Team Name: Your Answer 
 
-Niracha Janavatara 
-Shane Pruthikosit
-Lalida Krairit
+## Team Members
+
+1. Niracha Janavatara (Nana)
+2. Shane Pruthikosit (Shane)
+3. Lalida Krairit (Lala)
 
 Last Update Date
 2024-11-22
